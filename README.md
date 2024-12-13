@@ -61,7 +61,7 @@ To ensure your comfort, we offer exclusive accommodation in our luxurious Europe
 
 At Andara Imperial Terrace, we aim to deliver not just tours but unforgettable experiences that leave you feeling refreshed and inspired. Come and let us guide you through the wonders of Solo Raya!
 
-## Framwwork Used
+## Framework Used
 
 This is a [React.js].
 
@@ -112,10 +112,8 @@ They have no coupling to any specific domain/resource.
 
 Resources are like:
 
-- seller
-- seller-inbound
-- merchant
-- merchant-inbound
+- admin
+- customer
 
 ### domains/<resource>
 
@@ -126,20 +124,6 @@ Resources are like:
 - organisms
 - pages
 
-### Domains/<resource>/<atomic_strucutre>/<component-name>
-
-Example
-
-```bash
-- domain
-  - seller                <- resource
-    - atoms               <- atomic_strucutre
-      - seller-type-badge <- component-name
-        - seller-type-badge.jsx
-        - index.js
-```
-
-This is the maximum depth for all atomic_structure folders.
 
 ### domains/<resource>/services
 
@@ -173,24 +157,6 @@ Rules for functions:
 ## API Service Convention
 
 - QueryParamsUtil.format(tableState, additionalFilters)
-
-## General Blueprint for Forms
-
-### Form Naming
-
-Name forms with the resource and action
-
-ResourceActionForm
-
-Resource : Seller Ingound
-Action   : Create
-UI Comp  : Form
-
-- SellerInboundCreateForm
-  - a for mto create a Seller Inbound
-
-- SellerInboundReceiveForm
-  - a form to fill up to receive a Seller Inbound
 
 ### Form Rules
 
