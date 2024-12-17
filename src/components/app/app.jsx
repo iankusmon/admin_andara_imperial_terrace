@@ -6,7 +6,7 @@ import { Col, Container, Row } from 'reactstrap'
 import routes from 'routes'
 import WithAlert from 'hocs/with-alert'
 import PropTypes from 'prop-types'
-import tlIcon from 'assets/img/tl-icon.png'
+// import tlIcon from 'assets/img/tl-icon.png'
 
 const propTypes = {
   setAlertMsg    : PropTypes.func,
@@ -47,10 +47,10 @@ const App = ({ setAlertMsg, setApiErrorMsg }) => {
         toggleSidebar={ toggleSidebar }
         isSidebarOpen={ isSidebarOpen }
         logo={{
-          name      : 'Ops Dashboard',
+          name      : 'Admin Dashboard',
           sup       : '',
           innerLink : '/',
-          imgSrc    : tlIcon,
+          // imgSrc    : tlIcon,
           imgAlt    : '...'
         }}
       />

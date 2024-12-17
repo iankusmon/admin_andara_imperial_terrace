@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
         setAuth(response.status === 200)
         setUser({
           name : admin.name,
-          role : admin.access
+          role : admin.roles
         })
         setIsLoading(false)
       })

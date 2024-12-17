@@ -50,33 +50,30 @@ const AdminListPage = ({ pageUtils }) => {
     })
   }, [])  // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleFetchAdmins = useCallback((tableState) => {
+  const handleFetchAdmins = useCallback(() => {
     setIsLoading(true)
-    const tableFilters = {}
+    console.log(admins)
+    // const tableFilters = {}
 
-    tableState.filters.map((filter) => {
-      if (filter.id === 'created_at')
-        tableFilters[ 'sort_dir' ] = filter.value
-      else
-        tableFilters[ filter.id ] = filter.value
-    })
+    // tableState.filters.map((filter) => {
+    //   if (filter.id === 'created_at')
+    //     tableFilters[ 'sort_dir' ] = filter.value
+    //   else
+    //     tableFilters[ filter.id ] = filter.value
+    // })
 
-    AdminsApiV2.get({
-      tableState : tableState,
-      filters    : tableFilters
-    })
+    AdminsApiV2.get()
       .then((response) => {
-        setAdmins(response.data.admins)
-        setPagination(response.data.meta)
-        setTableState(tableState)
-        history.push({
-          pathname : location.pathname,
-          search   : '?' + new URLSearchParams(tableFilters)
-        })
+        
+        // setPagination(response.data.meta)
+        // setIsLoading(false)
+        console.log(response.data)
+        setAdmins(response.data)
+        console.log(admins)
       })
       .catch((error) => pageUtils.setApiErrorMsg(error.response.data))
       .finally(() => setIsLoading(false))
-  }, [ pageUtils ]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [  ]) // eslint-disable-line react-hooks/exhaustive-deps
 
 
   const handleDisableAdmin = useCallback((datum) => {
@@ -89,12 +86,12 @@ const AdminListPage = ({ pageUtils }) => {
           `Admin with email ${datum.email} has been disabled`,
           ALERT_TYPES.SUCCESS
         )
-        handleFetchAdmins(tableState)
+        handleFetchAdmins()
       })
       .catch((error) => {
         pageUtils.setApiErrorMsg(error.response.data)
       })
-  }, [ pageUtils, handleFetchAdmins, tableState ])
+  }, [ pageUtils, handleFetchAdmins ])
 
   const handleEnableAdmin = useCallback((datum) => {
     AdminsApiV2.update({
@@ -106,12 +103,12 @@ const AdminListPage = ({ pageUtils }) => {
           `Admin with email ${datum.email} has been enabled`,
           ALERT_TYPES.SUCCESS
         )
-        handleFetchAdmins(tableState)
+        handleFetchAdmins()
       })
       .catch((error) => {
         pageUtils.setApiErrorMsg(error.response.data)
       })
-  }, [ pageUtils, handleFetchAdmins, tableState ])
+  }, [ pageUtils, handleFetchAdmins ])
 
 
   return (

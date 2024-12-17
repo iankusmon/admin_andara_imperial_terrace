@@ -5,7 +5,7 @@ import UpdatePasswordPage from 'domains/admin/pages/update-password-page'
 const hr_team_routes = {
   collapse  : true,
   path      : '/hr',
-  name      : 'HR Team',
+  name      : 'Super Admin Team',
   icon      : 'fas fa-poll text-blue',
   state_key : 'hr_team_collapse',
   views     : [

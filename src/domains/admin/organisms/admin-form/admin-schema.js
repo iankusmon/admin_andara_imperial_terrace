@@ -9,8 +9,7 @@ const adminSchema = Yup.object().shape({
   email: Yup.string()
     .min(2, 'At least 2 characters')
     .email('Invalid email')
-    .required('Required')
-    .matches(/@tinkerlust.com+$/, 'Only accept tinkerlust email'),
+    .required('Required'),
 
   access: Yup.string()
     .required('Required'),

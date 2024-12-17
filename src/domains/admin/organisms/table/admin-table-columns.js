@@ -104,11 +104,19 @@ const adminTableColumns = ({
         accessor : 'name'
       },
       {
+        Header   : 'Username',
+        accessor : 'username'
+      },
+      {
         Header   : 'Email',
         accessor : 'email'
       },
       {
-        Header   : 'Access',
+        Header   : 'Mobile',
+        accessor : 'mobile'
+      },
+      {
+        Header   : 'Roles',
         accessor : 'access',
         Filter   : AdminAccessFilter,
         Cell     : AdminAccessCell
