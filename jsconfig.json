@@ -1,0 +1,69 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "module": "CommonJS",
+    "sourceMap": true,
+    "target": "ES2021",
+    "baseUrl": "./src",
+    "paths": {
+      "assets": [
+        "./assets"
+      ],
+      "assets/*": [
+        "./assets/*"
+      ],
+      "components": [
+        "./components"
+      ],
+      "components/*": [
+        "./components/*"
+      ],
+      "configs": [
+        "./configs"
+      ],
+      "configs/*": [
+        "./configs/*"
+      ],
+      "constants": [
+        "./constants"
+      ],
+      "constants/*": [
+        "./constants/*"
+      ],
+      "domains": [
+        "./domains"
+      ],
+      "domains/*": [
+        "./domains/*"
+      ],
+      "hocs": [
+        "./hocs"
+      ],
+      "hocs/*": [
+        "./hocs/*"
+      ],
+      "providers": [
+        "./providers"
+      ],
+      "providers/*": [
+        "./providers/*"
+      ],
+      "routes": [
+        "./routes"
+      ],
+      "routes/*": [
+        "./routes/*"
+      ],
+      "utils": [
+        "./utils"
+      ],
+      "utils/*": [
+        "./utils/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    ".vscode"
+  ]
+}
