@@ -1,0 +1,18 @@
+.badge-lg {
+  font-size: 80%;
+}
+.table {
+  thead th {
+      border-right: $table-border-width solid $table-border-color;
+      border-left: $table-border-width solid $table-border-color;
+  }
+  th {
+    border-right: $table-border-width solid $table-border-color;
+    border-left: $table-border-width solid $table-border-color;
+  }
+
+  td {
+    border-right: $table-border-width solid $table-border-color;
+    border-left: $table-border-width solid $table-border-color;
+  }
+}
