@@ -1,0 +1,36 @@
+/**
+ * z-index is inbetween the following bootstrap classes
+ *   $zindex-modal-backdrop:    1040 !default;
+ *   $zindex-modal:             1050 !default;
+ * Ref: https://getbootstrap.com/docs/4.6/layout/overview/#z-index
+ */
+ .drawer {
+  position: fixed;
+  top: 0;
+  left: 100vw;
+  height: 100%;
+  z-index: 1050;
+  background: white;
+  transition: all 0.3s;
+  overflow-y: scroll;
+  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  // padding: 1.5rem;
+
+  // Medium Size - Tablets
+  @media screen and (min-width: 768px) {
+    width: 50vw;
+    &.active {
+      left: 50vw;
+    }
+  }
+
+  // Small - Mobile Phones
+  @media screen and (max-width: 600px) {
+    width: 100vw;
+    &.active {
+      left: 0vw;
+    }
+  }
+
+}

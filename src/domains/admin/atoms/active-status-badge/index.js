@@ -1,0 +1,1 @@
+export { default } from './active-status-badge'
