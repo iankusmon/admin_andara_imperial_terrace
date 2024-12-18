@@ -32,3 +32,4 @@ const AccessBadge = ({ access }) => {
 AccessBadge.propTypes = propTypes
 
 export default AccessBadge
+

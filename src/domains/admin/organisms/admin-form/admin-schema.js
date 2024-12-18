@@ -11,7 +11,7 @@ const adminSchema = Yup.object().shape({
     .email('Invalid email')
     .required('Required'),
 
-  access: Yup.string()
+  roles: Yup.string()
     .required('Required'),
 
   password: Yup.string()

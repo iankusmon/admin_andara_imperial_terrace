@@ -16,13 +16,14 @@ const AdminsApiV2 = {
     return response
   },
 
-  get: async ({ tableState, filters }) => {
+  get: async () => {
     const path   = API_PATH
-    const params = QueryParamsUtil.format(tableState, filters)
+    // const params = QueryParamsUtil.format(tableState, filters)
 
-    const response = axios.get(path, { params })
+    const response = axios.get(path)
     return response
   },
+
 
   update: async ({ adminId, activeStatus }) => {
     const path     = `${API_PATH}/${adminId}`

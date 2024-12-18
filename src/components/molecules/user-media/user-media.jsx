@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Media } from 'reactstrap'
-import AdminAccessBadge from 'domains/admin/atoms/access-badge'
+import AdminAccessBadge from 'domains/admin/atoms/roles-badge'
 
 
 const propTypes = {

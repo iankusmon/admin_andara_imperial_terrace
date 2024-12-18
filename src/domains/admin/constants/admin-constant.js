@@ -1,5 +1,14 @@
 // Constant for Admin
 
+export const ROLES = {
+  SUPER_ADMIN : 'super_admin',
+  PROPERTY    : 'property',
+  TENDER      : 'tender',
+  PENYEWAAN   : 'penyewaan',
+  PACKAGE     : 'package',
+  KPR         : 'kpr'
+}
+
 export const ACCESS = {
   SUPER_ADMIN : 'super_admin',
   ADMIN       : 'admin',
