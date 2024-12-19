@@ -16,11 +16,11 @@ const AdminsApiV2 = {
     return response
   },
 
-  get: async () => {
+  get: async ({ tableState, filters }) => {
     const path   = API_PATH
-    // const params = QueryParamsUtil.format(tableState, filters)
+    const params = QueryParamsUtil.format(tableState, filters)
 
-    const response = axios.get(path)
+    const response = axios.get(path, {params})
     return response
   },
 
