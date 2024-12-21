@@ -31,7 +31,7 @@ const CustomerCreatepage = ({ pageUtils }) => {
 
   return (
     <>
-      <TitlePage mainTitle={ 'New Customer' } />
+      <TitlePage mainTitle={ 'Customer Create' } />
 
       <Card>
         <CardBody>

@@ -1,10 +1,10 @@
 import shared_routes from 'routes/shared'
-import hr_team_routes from 'routes/hr-team/hr-team-routes'
+import super_admin_routes from 'routes/super_admin/super_admin_routes'
 
 const routes = [
   /** Shared Routes defines pages that render data for a resource*/
   ...shared_routes,
-  hr_team_routes
+  super_admin_routes
 ]
 
 export default routes

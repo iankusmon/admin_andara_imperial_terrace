@@ -52,8 +52,16 @@ const customerTableColumns = ({
         accessor : 'name'
       },
       {
+        Header   : 'Username',
+        accessor : 'username'
+      },
+      {
         Header   : 'email',
         accessor : 'email'
+      },
+      {
+        Header   : 'NIK',
+        accessor : 'nik'
       },
       {
         Header   : 'Mobile',

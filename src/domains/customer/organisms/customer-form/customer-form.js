@@ -1,30 +1,32 @@
 import { InputField, InputSelectOptions } from 'components'
 import LoaderButton from 'components/molecules/loader-button'
-import AddressFormField from 'domains/address/organisms/address-form-field'
 import customerSchema from 'domains/customer/organisms/customer-form/customer-schema'
 import { Form, Formik } from 'formik'
 import TimeUtil from 'utils/time-util'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { Col, Row } from 'reactstrap'
-import { GENDER  } from 'domains/seller/constants'
 
 const propTypes = {
-  customer: PropTypes.shape({
-    name     : PropTypes.string,
-    email    : PropTypes.string,
-    mobile : PropTypes.string,
-    birthday : PropTypes.date,
-    gender   : PropTypes.string,
-    address  : PropTypes.shape({
-      id                 : PropTypes.number,
-      street_address     : PropTypes.string,
-      tl_province_id     : PropTypes.number,
-      tl_city_id         : PropTypes.number,
-      tl_district_id     : PropTypes.number,
-      tl_sub_district_id : PropTypes.number,
-      postal_code        : PropTypes.string
-    })
+  customer : PropTypes.shape({
+    name                     : PropTypes.string,
+    username                 : PropTypes.string,
+    email                    : PropTypes.string,
+    mobile                   : PropTypes.number,
+    referreral_code          : PropTypes.string,
+    visit_id                 : PropTypes.string,
+    kpr_document_id          : PropTypes.string,
+    villa_unit_id            : PropTypes.string,
+    last_login_at            : PropTypes.string,
+    villa_rent_id            : PropTypes.string,
+    package_id               : PropTypes.string,
+    is_buyer                 : PropTypes.string,
+    is_renter                : PropTypes.string,
+    is_package               : PropTypes.string,
+    is_package_buyer         : PropTypes.string,
+    photo_profile_url        : PropTypes.string,
+    customer_address_id      : PropTypes.string,
+    nik                      : PropTypes.number
   }),
   buttonText       : PropTypes.string.isRequired,
   handleSubmitForm : PropTypes.func.isRequired
@@ -32,20 +34,25 @@ const propTypes = {
 
 const defaultProps = {
   customer: {
-    name     : '',
-    email    : '',
-    mobile : '',
-    birthday : TimeUtil.format('1970-01-01T01:00:01.000'),
-    gender   : '',
-    address  : {
-      id                 : -1,
-      street_address     : '',
-      tl_province_id     : -1,
-      tl_city_id         : -1,
-      tl_district_id     : -1,
-      tl_sub_district_id : -1,
-      postal_code        : ''
-    }
+    name                     : '',
+    username                 : '',
+    email                    : '',
+    mobile                   : '',
+    referreral_code          : '',
+    visit_id                 : '',
+    kpr_document_id          : '',
+    villa_unit_id            : '',
+    last_login_at            : '',
+    villa_rent_id            : '',
+    package_id               : '',
+    is_buyer                 : '',
+    is_renter                : '',
+    is_package               : '',
+    is_package_buyer         : '',
+    photo_profile_url        : '',
+    customer_address_id      : '',
+    nik                      : ''
+   
   },
   buttonText       : 'Submit',
   handleSubmitForm : () => {}
@@ -56,15 +63,6 @@ const CustomerForm = ({
   buttonText,
   handleSubmitForm
 }) => {
-  const fieldNames = {
-    streetAddress : 'address.street_address',
-    provinceId    : 'address.tl_province_id',
-    cityId        : 'address.tl_city_id',
-    districtId    : 'address.tl_district_id',
-    subDistrictId : 'address.tl_sub_district_id',
-    postalCode    : 'address.postal_code'
-  }
-
 
   return (
     <div>
@@ -83,14 +81,21 @@ const CustomerForm = ({
                     type='text'
                     name='name'
                     label='Name'
-                    placeholder='Mariana'
+                    placeholder='Nama Anda'
+                    required={ true }
+                  />
+                   <InputField
+                    type='text'
+                    name='username'
+                    label='Username'
+                    placeholder='Username Anda'
                     required={ true }
                   />
                   <InputField
-                    type='text'
+                    type='email '
                     name='email'
                     label='Email'
-                    placeholder='mariana@gmail.com'
+                    placeholder='example@gmail.com'
                     required={ true }
                   />
                   <InputField
@@ -101,41 +106,28 @@ const CustomerForm = ({
                     required={ true }
                   />
                   <InputField
-                    type='date'
-                    name='birthday'
-                    label='Birthday'
+                    type='number'
+                    name='nik'
+                    label='NIK'
                     required={ true }
                   />
                   <InputField
-                    type='select'
-                    name='gender'
-                    label='Gender'
+                    type='text'
+                    name='photo_profile_url'
+                    label='Photo Profile URL'
                     required={ true }
-                  >
-                    <InputSelectOptions options={ GENDER } keyPrefix={ 'gender' } />
-                  </InputField>
-                </Col>
-
-                <Col>
-                  <AddressFormField
-                    formikBag={ formikBag }
-                    fieldNames={ fieldNames }
-                  />
-
-                  <LoaderButton
-                    className='float-right'
-                    color='primary'
-                    type='submit'
-                    onSubmit={ formikBag.submitForm }
-                    disabled={ formikBag.isSubmitting }
-                    isLoading={ formikBag.isSubmitting }
-                    text={ buttonText }
                   />
                 </Col>
               </Row>
-              <Row>
-
-              </Row>
+              <LoaderButton
+                className='float-left'
+                color='primary'
+                type='submit'
+                onSubmit={ formikBag.submitForm }
+                disabled={ formikBag.isSubmitting }
+                isLoading={ formikBag.isSubmitting }
+                text={ buttonText }
+              />
             </Form>
           )
         }

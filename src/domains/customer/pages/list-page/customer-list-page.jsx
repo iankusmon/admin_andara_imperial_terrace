@@ -24,7 +24,7 @@ const CustomerListPage = ({ pageUtils }) => {
     setIsLoading(true)
     CustomersApiV2.get({ tableState: tableState })
       .then((response) => {
-        setCustomers(response.data.customers)
+        setCustomers(response.data)
         setPagination(response.data.meta)
       })
       .catch((error) => pageUtils.setApiErrorMsg(error.response.data))
@@ -34,7 +34,7 @@ const CustomerListPage = ({ pageUtils }) => {
   const handleSelectRow = useCallback((datum) => {
     const id = datum.id
     history.push({
-      pathname: `/app/customers/${id}`
+      pathname: `/app/super_admin/customer/edit/${id}`
     })
   }, [ history ])
 

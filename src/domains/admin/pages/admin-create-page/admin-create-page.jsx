@@ -37,7 +37,7 @@ const AdminCreatePage = ({ pageUtils }) => {
         className='mb-3'
         size='sm'
         text={ 'Back to list' }
-        path={ '/app/hr/admins' }
+        path={ '/app/super_admin/admins' }
       />
 
       <TitlePage mainTitle={ 'Admin' } subTitle={ 'Create' } />
