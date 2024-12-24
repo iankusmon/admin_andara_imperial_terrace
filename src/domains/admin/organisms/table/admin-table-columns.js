@@ -112,7 +112,7 @@ const adminTableColumns = ({
         accessor : 'email'
       },
       {
-        Header   : 'Mobile',
+        Header   : 'Nomor Handphone',
         accessor : 'mobile'
       },
       {

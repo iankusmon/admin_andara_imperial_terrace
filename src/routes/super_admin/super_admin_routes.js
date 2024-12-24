@@ -6,6 +6,10 @@ import CustomerCreatepage from 'domains/customer/pages/create-page/customer-crea
 import CustomerEditPage from 'domains/customer/pages/customer-edit-page/customer-edit-page'
 import NupListPage from 'domains/nup/pages/list-page/nup_list_page'
 import NupEditPage from 'domains/nup/pages/nup-edit-page/nup_edit_page'
+import BookingFeeListPage from 'domains/booking-fee/pages/list-page/booking_fee_list_page'
+import BookingFeeEditPage from 'domains/booking-fee/pages/booking-fee-edit-page/booking_fee_edit_page'
+import DownPaymentListPage from 'domains/down-payment/pages/list-page'
+import DownPaymentEditPage from 'domains/down-payment/pages/down-payment-edit-page'
 
 const super_admin_routes = {
   collapse  : true,
@@ -53,7 +57,7 @@ const super_admin_routes = {
     {
       path      : '/super_admin/nups',
       name      : 'NUP',
-      miniName  : 'A',
+      miniName  : 'N',
       component : NupListPage,
       layout    : '/app'
     },
@@ -62,6 +66,36 @@ const super_admin_routes = {
       name      : 'Update NUP',
       miniName  : 'UNUP',
       component : NupEditPage,
+      layout    : '/app',
+      invisible : true
+    },
+    {
+      path      : '/super_admin/booking_fees',
+      name      : 'Booking Fee',
+      miniName  : 'BF',
+      component : BookingFeeListPage,
+      layout    : '/app'
+    },
+    {
+      path      : '/super_admin/booking_fees/edit/:id',
+      name      : 'Update Booking Fee',
+      miniName  : 'UBF',
+      component : BookingFeeEditPage,
+      layout    : '/app',
+      invisible : true
+    },
+    {
+      path      : '/super_admin/down_payments',
+      name      : 'Down Payment',
+      miniName  : 'DP',
+      component : DownPaymentListPage,
+      layout    : '/app'
+    },
+    {
+      path      : '/super_admin/down_payments/edit/:id',
+      name      : 'Update Down Payment',
+      miniName  : 'UDP',
+      component : DownPaymentEditPage,
       layout    : '/app',
       invisible : true
     },
