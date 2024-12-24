@@ -1,6 +1,8 @@
-import RowButton from 'components/atoms/row-button';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { STATUS } from 'domains/nup/constants';
+import StatusBadge from 'domains/nup/atoms/status-badge';
+import { RowButton, SelectTableFilter } from 'components/atoms'
 
 const propTypes = {
   buttonText: PropTypes.string.isRequired,
@@ -28,6 +30,20 @@ const nupTableColumns = ({
   buttonColour,
   onButtonClick
 }) => {
+
+  const NupStatusFilter = ({ column }) => {
+    const options = Object.keys(STATUS).map((key) => (
+      {
+        label : STATUS[key],
+        value : STATUS[key]
+      }
+    ))
+    return (
+      <SelectTableFilter reactTableColumn={ column } options={ options } />
+    )
+  }
+
+  const NupStatusCell = (row) => <StatusBadge status={ row.cell.value } />
 
   const ActionCell = ({ cell: { row } }) => (
     <RowButton
@@ -76,7 +92,9 @@ const nupTableColumns = ({
       },
       {
         Header   : 'Status Pembayaran',
-        accessor : 'status'
+        accessor : 'status',
+        Filter   : NupStatusFilter,
+        Cell     : NupStatusCell
       },
       {
         Header : 'Action',
