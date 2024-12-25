@@ -1,10 +1,9 @@
-import { InputField } from 'components'
+import { InputSelectOptions, InputField } from 'components'
 import LoaderButton from 'components/molecules/loader-button'
 import { Form, Formik } from 'formik'
 import PropTypes from 'prop-types'
 import { Col, Row } from 'reactstrap'
-import React from "react";
-import ReactDOM from "react-dom";
+import { PACKAGE, STATUS, PAYMENT_METHOD, VILLA_DESIRED, OCCUPATION } from 'domains/nup/constants/nup-constant';
 
 const propTypes = {
   nup : PropTypes.shape({
@@ -87,63 +86,77 @@ const NupForm = ({
                     required={ true }
                   />
                   <InputField
-                    type='text'
+                    type='select'
                     name='occupation'
                     label='Pekerjaan'
                     required={ true }
-                  />
+                  >
+                    <InputSelectOptions options={ OCCUPATION } keyPrefix={ 'occupation' } />
+                  </InputField>
                   <InputField
                     type='text'
                     name='scan_ktp_url'
                     label='URL Scan KTP'
                     required={ true }
                   />
-                  <div style={{ maxWidth: '120px' }}>
-                    <img
-                      src={ formikBag.values?.scan_ktp_url }
-                    />
-                  </div>
+                    <div style={{ maxWidth: '350px' }}>
+                      <img
+                        src={formikBag.values?.scan_ktp_url || 'default-image-url.jpg'}
+                        alt="URL Scan KTP"
+                        style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
+                      />
+                    </div>
                   <InputField
                     type='text'
                     name='payment_receipt_url'
                     label='Bukti Pembayaran'
                     required={ true }
                   />
-                  <div style={{ maxWidth: '120px' }}>
-                    <img
-                      src={ formikBag.values?.payment_receipt_url }
-                    />
-                  </div>
+                    <div style={{ maxWidth: '250px' }}>
+                      <img
+                        src={formikBag.values?.payment_receipt_url || 'default-image-url.jpg'}
+                        alt="Payment Receipt"
+                        style={{ width: '100%', height: 'auto', objectFit: 'contain' }}
+                      />
+                    </div>
                   <InputField
-                    type='text'
+                    type='select'
                     name='package'
                     label='Paket'
                     required={ true }
-                  />
+                  >
+                    <InputSelectOptions options={ PACKAGE } keyPrefix={ 'package' } />
+                  </InputField>
                   <InputField
-                    type='text'
+                    type='select'
                     name='villa_desired'
                     label='Villa Yang Diinginkan'
                     required={ true }
-                  />
+                  >
+                    <InputSelectOptions options={ VILLA_DESIRED } keyPrefix={ 'villa_desired' } />
+                  </InputField>
                   <InputField
-                    type='text'
+                    type='select'
                     name='payment_method'
                     label='Metode Pembayaran'
                     required={ true }
-                  />
+                  >
+                    <InputSelectOptions options={ PAYMENT_METHOD } keyPrefix={ 'payment_method' } />
+                   </InputField>
                    <InputField
                     type='text'
                     name='address'
                     label='Alamat'
                     required={ true }
                   />
-                   <InputField
-                    type='text'
+                  <InputField
+                    type='select'
                     name='status'
-                    label='Status'
+                    label='Status Pembayaran'
                     required={ true }
-                  />
+                  >
+                    <InputSelectOptions options={ STATUS } keyPrefix={ 'status' } />
+                  </InputField>
                 </Col>
               </Row>
               <LoaderButton

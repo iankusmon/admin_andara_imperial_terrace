@@ -1,6 +1,12 @@
-import RowButton from 'components/atoms/row-button';
 import React from 'react';
 import PropTypes from 'prop-types';
+import { 
+  PAYMENT_TYPE,
+  PAYMENT_METHOD,
+  STATUS 
+} from 'domains/down-payment/constants/down-payment-constant';
+import StatusBadge from 'domains/down-payment/atoms/status-badge';
+import { RowButton, SelectTableFilter } from 'components/atoms'
 
 const propTypes = {
   buttonText: PropTypes.string.isRequired,
@@ -29,6 +35,45 @@ const downpaymentTableColumns = ({
   onButtonClick
 }) => {
 
+  const DownPaymentStatusFilter = ({ column }) => {
+    const options = Object.keys(STATUS).map((key) => (
+      {
+        label : STATUS[key],
+        value : STATUS[key]
+      }
+    ))
+    return (
+      <SelectTableFilter reactTableColumn={ column } options={ options } />
+    )
+  }
+
+  const DownPaymentPaymentTypeFilter = ({ column }) => {
+    const options = Object.keys(PAYMENT_TYPE).map((key) => (
+      {
+        label : PAYMENT_TYPE[key],
+        value : PAYMENT_TYPE[key]
+      }
+    ))
+    return (
+      <SelectTableFilter reactTableColumn={ column } options={ options } />
+    )
+  }
+
+  const DownPaymentPaymentMethodFilter = ({ column }) => {
+    const options = Object.keys(PAYMENT_METHOD).map((key) => (
+      {
+        label : PAYMENT_METHOD[key],
+        value : PAYMENT_METHOD[key]
+      }
+    ))
+    return (
+      <SelectTableFilter reactTableColumn={ column } options={ options } />
+    )
+  }
+
+
+  const DownPaymentFeeStatusCell = (row) => <StatusBadge status={ row.cell.value } />
+
   const ActionCell = ({ cell: { row } }) => (
     <RowButton
       data={row.original}
@@ -52,11 +97,13 @@ const downpaymentTableColumns = ({
       },
       {
         Header   : 'Tipe Pembayaran',
-        accessor : 'payment_type'
+        accessor : 'payment_type',
+        Filter   : DownPaymentPaymentTypeFilter,
       },
       {
         Header   : 'Metode Pembayaran',
-        accessor : 'payment_method'
+        accessor : 'payment_method',
+        Filter   : DownPaymentPaymentMethodFilter,
       },
       {
         Header   : 'Jumlah Pembayaran',
@@ -80,7 +127,9 @@ const downpaymentTableColumns = ({
       },
       {
         Header   : 'Status Pembayaran',
-        accessor : 'status'
+        accessor : 'status',
+        Filter   : DownPaymentStatusFilter,
+        Cell     : DownPaymentFeeStatusCell
       },
       {
         Header : 'Action',

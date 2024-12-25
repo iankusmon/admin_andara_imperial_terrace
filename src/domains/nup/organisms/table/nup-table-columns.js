@@ -1,6 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { STATUS } from 'domains/nup/constants';
+import { 
+  PAYMENT_METHOD,
+  VILLA_DESIRED,
+  PACKAGE, 
+  STATUS 
+} from 'domains/nup/constants/nup-constant';
 import StatusBadge from 'domains/nup/atoms/status-badge';
 import { RowButton, SelectTableFilter } from 'components/atoms'
 
@@ -36,6 +41,42 @@ const nupTableColumns = ({
       {
         label : STATUS[key],
         value : STATUS[key]
+      }
+    ))
+    return (
+      <SelectTableFilter reactTableColumn={ column } options={ options } />
+    )
+  }
+
+  const NupPaymentMethodFilter = ({ column }) => {
+    const options = Object.keys(PAYMENT_METHOD).map((key) => (
+      {
+        label : PAYMENT_METHOD[key],
+        value : PAYMENT_METHOD[key]
+      }
+    ))
+    return (
+      <SelectTableFilter reactTableColumn={ column } options={ options } />
+    )
+  }
+
+  const NupVillaDesiredFilter = ({ column }) => {
+    const options = Object.keys(VILLA_DESIRED).map((key) => (
+      {
+        label : VILLA_DESIRED[key],
+        value : VILLA_DESIRED[key]
+      }
+    ))
+    return (
+      <SelectTableFilter reactTableColumn={ column } options={ options } />
+    )
+  }
+
+  const NupPackageFilter = ({ column }) => {
+    const options = Object.keys(PACKAGE).map((key) => (
+      {
+        label : PACKAGE[key],
+        value : PACKAGE[key]
       }
     ))
     return (
@@ -80,15 +121,18 @@ const nupTableColumns = ({
       },
       {
         Header   : 'Metode Pembayaran',
-        accessor : 'payment_method'
+        accessor : 'payment_method',
+        Filter   : NupPaymentMethodFilter,
       },
       {
         Header   : 'Villa Yang Diinginkan',
-        accessor : 'villa_desired'
+        accessor : 'villa_desired',
+        Filter   : NupVillaDesiredFilter,
       },
       {
         Header   : 'Paket',
-        accessor : 'package'
+        accessor : 'package',
+        Filter   : NupPackageFilter,
       },
       {
         Header   : 'Status Pembayaran',

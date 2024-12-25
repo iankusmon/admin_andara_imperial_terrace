@@ -1,10 +1,9 @@
-import { InputField } from 'components'
+import { InputSelectOptions, InputField } from 'components'
 import LoaderButton from 'components/molecules/loader-button'
 import { Form, Formik } from 'formik'
 import PropTypes from 'prop-types'
 import { Col, Row } from 'reactstrap'
-import React from "react";
-import ReactDOM from "react-dom";
+import { OCCUPATION, PAYMENT_METHOD, PAYMENT_TYPE, CASH_TEMPO_PERIOD, KPR_TENOR_PERIOD, STATUS  } from 'domains/booking-fee/constants/booking-fee-constant';
 
 const propTypes = {
   booking_fee : PropTypes.shape({
@@ -92,29 +91,37 @@ const BookingFeeForm = ({
                     required={ true }
                   />
                   <InputField
-                    type='text '
+                    type='select'
                     name='payment_type'
                     label='Tipe Pembayaran'
                     required={ true }
-                  />
+                    >
+                    <InputSelectOptions options={ PAYMENT_TYPE } keyPrefix={ 'payment_type' } />
+                  </InputField>
                   <InputField
-                    type='number'
+                    type='select'
                     name='payment_method'
                     label='Metode Pembayaran'
                     required={ true }
-                  />
+                    >
+                    <InputSelectOptions options={ PAYMENT_METHOD } keyPrefix={ 'payment_method' } />
+                  </InputField>
                   <InputField
-                    type='text'
+                    type='select'
                     name='cash_tempo_period'
                     label='Periode Cash Tempo'
                     required={ true }
-                  />
+                    >
+                    <InputSelectOptions options={ CASH_TEMPO_PERIOD } keyPrefix={ 'cash_tempo_period' } />
+                  </InputField>
                   <InputField
-                    type='text'
+                    type='select'
                     name='kpr_tenor_period'
                     label='Tenor KPR'
                     required={ true }
-                  />
+                    >
+                    <InputSelectOptions options={ KPR_TENOR_PERIOD } keyPrefix={ 'kpr_tenor_period' } />
+                  </InputField>
                   <InputField
                     type='text'
                     name='fullname'
@@ -134,11 +141,13 @@ const BookingFeeForm = ({
                     required={ true }
                   />
                   <InputField
-                    type='text'
+                    type='select'
                     name='occupation'
                     label='Pekerjaan'
                     required={ true }
-                  />
+                  >
+                    <InputSelectOptions options={ OCCUPATION } keyPrefix={ 'occupation' } />
+                  </InputField>
                   <InputField
                     type='text'
                     name='scan_ktp_url'
@@ -206,11 +215,13 @@ const BookingFeeForm = ({
                     required={ true }
                   />
                   <InputField
-                    type='text'
+                    type='select'
                     name='status'
                     label='Status'
                     required={ true }
-                  />
+                  >
+                    <InputSelectOptions options={ STATUS } keyPrefix={ 'status' } />
+                  </InputField>
                 </Col>
               </Row>
               <LoaderButton

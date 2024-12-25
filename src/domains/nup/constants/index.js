@@ -1,5 +1,6 @@
-import { STATUS } from './nup-constant'
+import { STATUS, PACKAGE } from './nup-constant'
 
 export {
-  STATUS
+  STATUS,
+  PACKAGE
 }

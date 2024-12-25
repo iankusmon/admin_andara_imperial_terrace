@@ -1,10 +1,15 @@
-import { InputField } from 'components'
+import { InputSelectOptions, InputField } from 'components'
 import LoaderButton from 'components/molecules/loader-button'
 import { Form, Formik } from 'formik'
 import PropTypes from 'prop-types'
 import { Col, Row } from 'reactstrap'
-import React from "react";
-import ReactDOM from "react-dom";
+import { 
+  OCCUPATION, 
+  PAYMENT_METHOD, 
+  PAYMENT_TYPE, 
+  TEMPO_PERIOD, 
+  STATUS  
+} from 'domains/down-payment/constants/down-payment-constant';
 
 const propTypes = {
   down_payment : PropTypes.shape({
@@ -74,17 +79,21 @@ const DownPaymentForm = ({
                     required={ true }
                   />
                   <InputField
-                    type='text '
+                    type='select'
                     name='payment_type'
                     label='Tipe Pembayaran'
                     required={ true }
-                  />
+                  >
+                    <InputSelectOptions options={ PAYMENT_TYPE } keyPrefix={ 'payment_type' } />
+                  </InputField>
                   <InputField
-                    type='text'
+                    type='select'
                     name='payment_method'
                     label='Metode Pembayaran'
                     required={ true }
-                  />
+                  >
+                    <InputSelectOptions options={ PAYMENT_METHOD } keyPrefix={ 'payment_method' } />
+                  </InputField>
                   <InputField
                     type='number'
                     name='payment_amount'
@@ -92,11 +101,13 @@ const DownPaymentForm = ({
                     required={ true }
                   />
                   <InputField
-                    type='text'
+                    type='select'
                     name='tempo_period'
                     label='Tenor'
                     required={ true }
-                  />
+                  >
+                    <InputSelectOptions options={ TEMPO_PERIOD } keyPrefix={ 'cash_tempo_period' } />
+                  </InputField>
                   <InputField
                     type='text'
                     name='fullname'
@@ -110,11 +121,13 @@ const DownPaymentForm = ({
                     required={ true }
                   />
                   <InputField
-                    type='text'
+                    type='select'
                     name='occupation'
                     label='Pekerjaan'
                     required={ true }
-                  />
+                  >
+                    <InputSelectOptions options={ OCCUPATION } keyPrefix={ 'occupation' } />
+                  </InputField>
                    <InputField
                     type='text'
                     name='payment_receipt_url'
@@ -128,11 +141,13 @@ const DownPaymentForm = ({
                     required={ true }
                   />
                   <InputField
-                    type='text'
+                    type='select'
                     name='status'
                     label='Status'
                     required={ true }
-                  />
+                  >
+                    <InputSelectOptions options={ STATUS } keyPrefix={ 'status' } />
+                  </InputField>
                 </Col>
               </Row>
               <LoaderButton

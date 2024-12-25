@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import DefaultStatusBadge from 'components/atoms/status-badge'
-import { STATUS } from 'domains/nup/constants/nup-constant'
+import { STATUS } from 'domains/down-payment/constants/down-payment-constant'
 
 const propTypes = {
   status: PropTypes.string

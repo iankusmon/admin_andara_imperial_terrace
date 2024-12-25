@@ -1,0 +1,1 @@
+export { default } from './down-payment-status-badge'

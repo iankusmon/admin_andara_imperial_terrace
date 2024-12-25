@@ -1,0 +1,17 @@
+import { 
+  OCCUPATION, 
+  PAYMENT_METHOD,
+  PAYMENT_TYPE,
+  TEMPO_PERIOD,
+  KPR_TENOR_PERIOD,
+  STATUS,
+} from './down-payment-constant'
+
+export {
+  OCCUPATION,
+  PAYMENT_METHOD,
+  PAYMENT_TYPE,
+  TEMPO_PERIOD,
+  KPR_TENOR_PERIOD,
+  STATUS,
+}
