@@ -1,0 +1,1 @@
+export { default } from './ppjb-document-status-badge'

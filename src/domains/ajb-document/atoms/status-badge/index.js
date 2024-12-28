@@ -1,0 +1,1 @@
+export { default } from './ajb-document-status-badge'

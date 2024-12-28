@@ -10,6 +10,8 @@ import BookingFeeListPage from 'domains/booking-fee/pages/list-page/booking_fee_
 import BookingFeeEditPage from 'domains/booking-fee/pages/booking-fee-edit-page/booking_fee_edit_page'
 import DownPaymentListPage from 'domains/down-payment/pages/list-page'
 import DownPaymentEditPage from 'domains/down-payment/pages/down-payment-edit-page'
+import AjbDocumentListPage from 'domains/ajb-document/pages/ajb-document-list-page/ajb_document_list_page'
+import PpjbDocumentListPage from 'domains/ppjb-document/pages/ppjb-document-list-page/ppjb_document_list_page'
 
 const super_admin_routes = {
   collapse  : true,
@@ -98,6 +100,20 @@ const super_admin_routes = {
       component : DownPaymentEditPage,
       layout    : '/app',
       invisible : true
+    },
+    {
+      path      : '/super_admin/ajb_documents',
+      name      : 'Dokumen AJB',
+      miniName  : 'AJB',
+      component : AjbDocumentListPage,
+      layout    : '/app'
+    },
+    {
+      path      : '/super_admin/ppjb_documents',
+      name      : 'Dokumen PPJB',
+      miniName  : 'PJB',
+      component : PpjbDocumentListPage,
+      layout    : '/app'
     },
     {
       path      : '/update-password',
