@@ -135,7 +135,7 @@ const UploadFileField = ({
             { ...props }
           />
           {
-            field.value.length > 0
+            field.value?.length > 0
               ? <DroppedFiles files={ field.value } />
               : <p>Drag and drop a file here, or click to select files</p>
           }

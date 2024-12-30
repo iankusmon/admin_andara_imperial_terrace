@@ -7,6 +7,7 @@ import { Col, Row } from 'reactstrap'
 import { OCCUPATION, PAYMENT_METHOD, PAYMENT_TYPE, CASH_TEMPO_PERIOD, KPR_TENOR_PERIOD, STATUS  } from 'domains/booking-fee/constants/booking-fee-constant';
 import axios from 'axios'
 import { ALERT_TYPES } from 'constants/alert-constants'
+import { Badge, FormGroup, Label } from 'reactstrap'
 
 const propTypes = {
   booking_fee : PropTypes.shape({
@@ -74,9 +75,11 @@ const BookingFeeForm = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = (values, formikBag) => {
+    console.log(values)
     // e.preventDefault();
     // Input values to formData
     const formData = new FormData();
+    console.log(file)
     formData.append('document[document_type]', 'spkb_document');
     formData.append('document[file]', file);
 
@@ -100,6 +103,8 @@ const BookingFeeForm = ({
     formData.append('booking_fee[payment_receipt_url]', values.payment_receipt_url);
     formData.append('booking_fee[kpr_tenor_period]', values.kpr_tenor_period);
     formData.append('booking_fee[status]', values.status);
+    formData.append('booking_fee[document_type]', 'spkb_document');
+    formData.append('booking_fee[file]', file);
     
     const config = {     
       headers: { 'content-type': 'multipart/form-data' }
@@ -113,6 +118,8 @@ const BookingFeeForm = ({
       })
     .finally(() => setIsLoading(false))
 
+    setIsLoading(false)
+
   };
   
   // Menggunakan nilai `booking_fee` dengan memastikan ID ada
@@ -120,6 +127,11 @@ const BookingFeeForm = ({
     ...booking_fee,
     id: booking_fee?.id || '',  // Pastikan id ada, atau default ke string kosong
   };
+
+  const dropzoneProps = {
+    accept   : 'text/csv, .docx, .pdf ,application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    maxFiles : 1
+  }
 
   return (
     <div>
@@ -280,7 +292,22 @@ const BookingFeeForm = ({
                     <InputSelectOptions options={ STATUS } keyPrefix={ 'status' } />
                   </InputField>
 
-                <label>Upload Dokumen SPKB:</label>
+                  <InputField
+                    type='text'
+                    name='upload_spkb_doc'
+                    label='Uploaded SPKB Doc'
+                    disabled={ true }
+                    required={ true }
+                  >
+                  </InputField>
+
+                {/* <label>Upload Dokumen SPKB:</label> */}
+                <Label
+                  for={ `Upload SPKB Document` || `Upload SPKB Document here:` }
+                  className='text-gray-light text-capitalize'
+                >
+                  <strong>{ `Upload SPKB Document here:` }</strong>
+                </Label>
                 <input type="file" onChange={(e) => setFile(e.target.files[0])} />
                 </Col>
               </Row>
@@ -290,7 +317,7 @@ const BookingFeeForm = ({
                 type='submit'
                 onSubmit={ formikBag.submitForm }
                 disabled={ formikBag.isSubmitting }
-                isLoading={ formikBag.isSubmitting }
+                isLoading={ false }
                 text={ buttonText }
               />
             </Form>
