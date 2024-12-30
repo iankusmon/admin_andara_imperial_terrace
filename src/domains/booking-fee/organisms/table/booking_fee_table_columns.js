@@ -159,10 +159,6 @@ const bookingfeeTableColumns = ({
         Cell     : BookingFeeStatusCell
       },
       {
-        Header   : 'Dokumen SPKB',
-        accessor : 'upload_spkb_doc',
-      },
-      {
         Header : 'Action',
         id     : 'action',
         Cell   : ActionCell

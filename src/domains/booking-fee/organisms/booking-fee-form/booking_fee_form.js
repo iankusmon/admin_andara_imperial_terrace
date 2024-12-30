@@ -292,15 +292,6 @@ const BookingFeeForm = ({
                     <InputSelectOptions options={ STATUS } keyPrefix={ 'status' } />
                   </InputField>
 
-                  <InputField
-                    type='text'
-                    name='upload_spkb_doc'
-                    label='Uploaded SPKB Doc'
-                    disabled={ true }
-                    required={ true }
-                  >
-                  </InputField>
-
                 {/* <label>Upload Dokumen SPKB:</label> */}
                 <Label
                   for={ `Upload SPKB Document` || `Upload SPKB Document here:` }

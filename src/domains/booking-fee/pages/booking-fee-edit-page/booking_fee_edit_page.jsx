@@ -1,6 +1,7 @@
   import React, { useEffect, useState } from 'react';
   import { useHistory, useParams } from 'react-router';
   import PropTypes from 'prop-types';
+  import { Form, Formik } from 'formik'
   import { Card, Row, Col, Nav, NavItem, NavLink, TabContent, TabPane, Alert, Button } from 'reactstrap';
   import BookingFeeApiV2 from 'api/v2/admins/booking-fees-api-v2';
   import RedirectButton from 'components/atoms/redirect-button';
@@ -9,6 +10,8 @@
   import StringUtils from 'utils/string-util';
   import { Link } from 'react-router-dom';
   import BookingFeeForm from 'domains/booking-fee/organisms/booking-fee-form/booking_fee_form';
+  import { LoaderButton } from 'components/molecules'
+  import axios from 'axios'
 
   const TAB = {
     PROFILE: 'profile',
@@ -25,6 +28,7 @@
     const [isLoading, setIsLoading] = useState(false);
     const [activeTab, setActiveTab] = useState(TAB.PROFILE);
     const [booking_fee, setBookingFee] = useState(null);
+    const [isDownloading, setIsDownloading] = useState(false)
     const { id } = useParams();
     const history = useHistory();
 
@@ -50,6 +54,35 @@
           formikBag.setErrors(error.response.data.messages)
           pageUtils.setApiErrorMsg(error.response.data)
         })
+    }
+
+    const handleClickDownload = async () => {
+      // await BookingFeeApiV2.downloadSPKBDocument(booking_fee.id)
+      //   .then(() => {
+      //     pageUtils.setAlertMsg('The SPKB Document has been downloaded.', ALERT_TYPES.SUCCESS)
+      //   })
+      //   .catch((error) => {
+      //     pageUtils.setApiErrorMsg(error.response.data)
+      //   })
+
+      try {
+        const response = await axios.get(`/api/admins/booking_fees/${booking_fee.id}/download_spkb_documents`, {
+          responseType: 'blob', // Handle binary data
+        });
+    
+        // Create a Blob from the file stream
+        const blob = new Blob([response.data], { type: response.headers['content-type'] });
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        link.download = response.headers['content-disposition']
+          ?.split('filename=')[1]
+          ?.replace(/"/g, '') || 'downloaded_file';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error('Error downloading file:', error);
+      }
     }
 
     const toggle = (tab) => {
@@ -99,6 +132,14 @@
                     buttonText={'SAVE'}
                   />
                 </Card>
+
+                <LoaderButton
+                  className="mb-3"
+                  text={ 'Download SPKB Document as CSV' }
+                  isLoading={ isDownloading }
+                  onClick={ handleClickDownload }
+                  color={ 'success' }
+                />
               </Col>
             </Row>
           </TabPane>

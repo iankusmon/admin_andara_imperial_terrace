@@ -45,6 +45,17 @@ const BookingFeeApiV2 = {
   },
 
   /**
+   * Get Downloading `SPKB Docunent`
+   * @param {object} id BookingFee id
+   * @return {object} `booking_fee`
+   */
+  downloadSPKBDocument: async (id) => {
+    const path     = `${API_PATH}/${id}/download_spkb_documents`
+    const response = axios.get(path)
+    return response
+  },
+
+  /**
    * update `BookingFee` profile data
    * @param {number} id BookingFee id
    * @param {object} values values for BookingFee update
