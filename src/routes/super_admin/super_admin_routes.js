@@ -122,6 +122,14 @@ const super_admin_routes = {
       component : UpdatePasswordPage,
       layout    : '/app',
       redirect  : true
+    },
+    {
+      path      : '/update-password',
+      name      : 'Update Password',
+      miniName  : 'R',
+      component : UpdatePasswordPage,
+      layout    : '/app',
+      redirect  : true
     }
   ]
 }
