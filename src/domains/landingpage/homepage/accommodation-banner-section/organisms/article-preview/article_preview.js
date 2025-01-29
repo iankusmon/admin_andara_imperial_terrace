@@ -97,14 +97,14 @@ const ArticlePreview = ({ data }) => {
                 {section.title || `Section ${index + 1}`}
               </h4>
 
-              {section.file && (
+              {section.image_url && (
                 <div style={{ marginTop: "10px", marginBottom: "10px" }}>
-                  <img
-                    src={getImageUrl(section.file)}
-                    alt={`Section ${index + 1} Image`}
-                    style={{ width: "100%", borderRadius: "5px" }}
-                  />
-                </div>
+                <img
+                  src={getImageUrl(section.image_url)}
+                  alt={`Section ${index + 1} Image`}
+                  style={{ width: "100%", borderRadius: "5px" }}
+                />
+              </div>
               )}
 
               <p>{section.description || "No description available."}</p>

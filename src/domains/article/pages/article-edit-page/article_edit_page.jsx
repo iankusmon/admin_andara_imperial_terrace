@@ -23,8 +23,8 @@ const ArticleEditPage = ({ pageUtils }) => {
     category: '',
     published_at: '',
     is_deleted: false,
-    sections_attributes: [],
-    meta_data_attributes: {
+    sections: [],
+    meta_data: {
       id: null,
       title: '',
       keyword: '',

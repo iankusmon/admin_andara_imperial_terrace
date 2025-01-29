@@ -108,8 +108,8 @@ const ArticleCreateForm = ({ onChange, data }) => {
           value={formData.active_status}
           onChange={(e) => handleFormChange("active_status", e.target.value)}
         >
-          <option value="enabled">Enabled</option>
-          <option value="disabled">Disabled</option>
+          <option value="enabled">enabled</option>
+          <option value="disabled">disabled</option>
         </Input>
       </FormGroup>
 

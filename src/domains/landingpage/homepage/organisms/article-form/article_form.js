@@ -9,7 +9,7 @@ const ArticleForm = ({ data, onChange }) => {
     title: data.title || "",
     url: data.url || "",
     hero_img_url: data.hero_img_url || "",
-    active_status: data.active_status || "Enabled",
+    active_status: data.active_status || "enabled",
     category: data.category || "",
     summary: data.summary || "",
     published_at: data.published_at || "",
@@ -22,7 +22,7 @@ const ArticleForm = ({ data, onChange }) => {
       title: data.title || "",
       url: data.url || "",
       hero_img_url: data.hero_img_url || "",
-      active_status: data.active_status || "Enabled",
+      active_status: data.active_status || "enabled",
       category: data.category || "",
       summary: data.summary || "",
       published_at: data.published_at || "",
@@ -128,8 +128,8 @@ const ArticleForm = ({ data, onChange }) => {
             value={formData.active_status}
             onChange={(e) => handleFormChange("active_status", e.target.value)}
           >
-            <option value="enabled">Enabled</option>
-            <option value="disabled">Disabled</option>
+            <option value="enabled">enabled</option>
+            <option value="disabled">disabled</option>
           </Input>
         </FormGroup>
 
