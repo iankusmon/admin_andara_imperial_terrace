@@ -1,94 +1,135 @@
-import AdminsApiV2 from 'api/v2/admins-api-v2'
-import InputField from 'components/molecules/input-field'
-import PublicHeader from 'components/organisms/public-header'
-import PublicPageTemplate from 'components/templates/public-page-template'
-import { Form, Formik } from 'formik'
-import { useAuth } from 'providers/auth-provider'
-import React, { useEffect } from 'react'
-import { useHistory } from 'react-router'
-import { Button, Card, CardBody } from 'reactstrap'
-import loginSchema from './login-schema'
+import './login.css'; // Import CSS file
+import AdminsApiV2 from 'api/v2/admins-api-v2';
+import { Form, Formik } from 'formik';
+import { useAuth } from 'providers/auth-provider';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router';
+import { Button, Card, CardBody, FormGroup, Label, Input } from 'reactstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons'; // Add icons
+import loginSchema from './login-schema';
+import Logo from '../../../../src/assets/img/Logo-AIT.png'; // Adjust path for your logo
 
 const LoginPage = () => {
-  useEffect(() => {
-    document.body.classList.add('bg-default')
-    return (() => {
-      document.body.classList.remove('bg-default')
-    })
-  }, [])
+  const [showPassword, setShowPassword] = useState(false);
 
-  const authContext = useAuth()
-  const history     = useHistory()
   useEffect(() => {
-    if (authContext.isAuth) history.push('/app')
-  },[ authContext.isAuth ]) // eslint-disable-line react-hooks/exhaustive-deps
+    document.body.classList.add('bg-default');
+    return () => {
+      document.body.classList.remove('bg-default');
+    };
+  }, []);
 
-  /**
-   *
-   * @param {Object} values - object with values of inputs in form
-   * @param {Object} actions - actions that can be operated on formik
-   */
+  const authContext = useAuth();
+  const history = useHistory();
+
+  useEffect(() => {
+    if (authContext.isAuth) history.push('/app');
+  }, [authContext.isAuth, history]);
+
   const handleSubmit = async (values, actions) => {
-    await AdminsApiV2.loginAdmin(values.email, values.password)
-      .then((response) => {
-        const admin = response.data.admin
+    try {
+      const response = await AdminsApiV2.loginAdmin(values.email, values.password);
+      const admin = response.data.admin;
+      if (admin) {
         authContext.onLogin({
-          name : admin.name,
-          role : admin.access
-        })
-      })
-      .catch((error) => {
-        actions.setSubmitting(false)
-        alert(error.message)
-      })
-  }
+          name: admin.name,
+          role: admin.access,
+        });
+        history.push('/app');
+      } else {
+        alert('Invalid credentials.');
+      }
+    } catch (error) {
+      actions.setSubmitting(false);
+      if (error.response?.data?.message) {
+        alert(error.response.data.message);
+      } else {
+        alert('An error occurred. Please try again.');
+      }
+    }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevState) => !prevState);
+  };
 
   return (
-    <PublicPageTemplate
-      header={ <PublicHeader title='Andara Imperial Terrace' lead='Admin Dashboard'/> }
-    >
-      <Card className="bg-secondary border-0 mb-0">
-        <CardBody className="px-lg-5 py-lg-5">
+    <div className="login-container">
+      <Card className="login-card">
+        <CardBody>
+          <div className="login-header">
+            <img src={Logo} alt="Logo" className="login-logo" />
+            <h3>Login</h3>
+          </div>
           <Formik
             initialValues={{
-              email    : '',
-              password : ''
+              email: '',
+              password: '',
             }}
-            validationSchema={ loginSchema }
-            onSubmit={ handleSubmit }
+            validationSchema={loginSchema}
+            onSubmit={handleSubmit}
           >
-            { (formikProps) => (
+            {(formikProps) => (
               <Form>
-                <InputField
-                  type='email'
-                  name='email'
-                  placeholder='Emailll'
-                />
-                <InputField
-                  type='password'
-                  name='password'
-                  placeholder='password'
-                />
+                <FormGroup>
+                  <Label for="email" className="login-label">
+                    Email
+                  </Label>
+                  <div className="input-icon-container">
+                    <FontAwesomeIcon icon={faEnvelope} className="input-icon" />
+                    <Input
+                      type="email"
+                      name="email"
+                      id="email"
+                      placeholder="AndaraIT@gmail.com"
+                      className="login-input"
+                      {...formikProps.getFieldProps('email')}
+                    />
+                  </div>
+                  {formikProps.errors.email && formikProps.touched.email && (
+                    <div className="login-error">{formikProps.errors.email}</div>
+                  )}
+                </FormGroup>
+                <FormGroup>
+                  <Label for="password" className="login-label">
+                    Password
+                  </Label>
+                  <div className="password-container">
+                    <FontAwesomeIcon icon={faLock} className="input-icon" />
+                    <Input
+                      type={showPassword ? 'text' : 'password'}
+                      name="password"
+                      id="password"
+                      placeholder="***********"
+                      className="login-input"
+                      {...formikProps.getFieldProps('password')}
+                    />
+                    <span
+                      className="password-toggle-icon"
+                      onClick={togglePasswordVisibility}
+                    >
+                      <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
+                    </span>
+                  </div>
+                  {formikProps.errors.password && formikProps.touched.password && (
+                    <div className="login-error">{formikProps.errors.password}</div>
+                  )}
+                </FormGroup>
                 <Button
-                  block
-                  color='primary'
-                  type='submit'
-                  disabled={ formikProps.isSubmitting }
+                  className="login-button"
+                  type="submit"
+                  disabled={formikProps.isSubmitting}
                 >
-                Submit
+                  Submit
                 </Button>
               </Form>
-            ) }
-
+            )}
           </Formik>
-
-
         </CardBody>
       </Card>
+    </div>
+  );
+};
 
-
-    </PublicPageTemplate>
-  )
-}
-
-export default LoginPage
+export default LoginPage;

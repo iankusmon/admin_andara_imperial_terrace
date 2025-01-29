@@ -1,30 +1,33 @@
 import React, { useEffect, useState } from "react";
 import { Form, FormGroup, Label, Input } from "reactstrap";
 import SectionsForm from "./sections_form";
+import MetaDataForm from "./meta_data_create_from";
 import { PACKAGE } from "../../constants/article-constant";
 
 const ArticleForm = ({ data, onChange }) => {
   const [formData, setFormData] = useState({
     title: data.title || "",
     url: data.url || "",
-    hero_img_url: data.hero_img_url || null,
+    hero_img_url: data.hero_img_url || "",
     active_status: data.active_status || "Enabled",
-    category: data.category || [],
+    category: data.category || "",
     summary: data.summary || "",
-    published_at: data.published_at || "", 
+    published_at: data.published_at || "",
     sections: data.sections || [],
+    meta_data: data?.meta_data || { title: "", keyword: "", description: "" },
   });
 
   useEffect(() => {
     setFormData({
       title: data.title || "",
       url: data.url || "",
-      hero_img_url: data.hero_img_url || null,
+      hero_img_url: data.hero_img_url || "",
       active_status: data.active_status || "Enabled",
-      category: data.category || [],
+      category: data.category || "",
       summary: data.summary || "",
-      published_at: data.published_at || "", 
+      published_at: data.published_at || "",
       sections: data.sections || [],
+      meta_data: data?.meta_data || { title: "", keyword: "", description: "" },
     });
   }, [data]);
 
@@ -34,11 +37,25 @@ const ArticleForm = ({ data, onChange }) => {
     onChange(updatedData);
   };
 
-  const handleSectionsChange = (sections) => {
-    const updatedData = { ...formData, sections };
-    setFormData(updatedData);
-    onChange(updatedData);
+  const handleHeroImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const previewURL = URL.createObjectURL(file);
+  
+      setFormData((prevData) => ({
+        ...prevData,
+        hero_image: file,
+        hero_image_preview: previewURL, // Menyimpan preview URL
+      }));
+  
+      onChange({
+        ...formData,
+        hero_image: file,
+      });
+    }
   };
+  
+  
 
   return (
     <div>
@@ -69,21 +86,30 @@ const ArticleForm = ({ data, onChange }) => {
 
         {/* Hero Image */}
         <FormGroup>
-          <Label for="hero_img_url">Hero Image</Label>
-          <Input
-            type="file"
-            id="hero_img_url"
-            onChange={(e) =>
-              handleFormChange("hero_img_url", e.target.files[0])
-            }
+      <Label for="hero_image">Hero Image</Label>
+      <Input type="file" id="hero_image" onChange={handleHeroImageChange} />
+      {formData.hero_image_preview || formData.hero_img_url ? (
+        <div style={{ marginTop: "10px" }}>
+          <p style={{ fontSize: "12px", color: "#888" }}>Preview:</p>
+          <img
+            src={formData.hero_image_preview || formData.hero_img_url}
+            alt="Hero Preview"
+            style={{
+              maxWidth: "150px",
+              maxHeight: "100px",
+              border: "1px solid #ddd",
+              borderRadius: "5px",
+            }}
           />
-        </FormGroup>
+        </div>
+      ) : null}
 
+    </FormGroup>
         {/* Published Date */}
         <FormGroup>
           <Label for="published_at">Published Date</Label>
           <Input
-            type="date" // Input tipe tanggal
+            type="date"
             id="published_at"
             value={formData.published_at}
             onChange={(e) => handleFormChange("published_at", e.target.value)}
@@ -113,15 +139,10 @@ const ArticleForm = ({ data, onChange }) => {
           <Input
             type="select"
             id="category"
-            multiple
             value={formData.category}
-            onChange={(e) =>
-              handleFormChange(
-                "category",
-                Array.from(e.target.selectedOptions, (option) => option.value)
-              )
-            }
+            onChange={(e) => handleFormChange("category", e.target.value)}
           >
+            <option value="">Select Category</option>
             {Object.keys(PACKAGE).map((key) => (
               <option key={key} value={PACKAGE[key]}>
                 {PACKAGE[key]}
@@ -129,7 +150,7 @@ const ArticleForm = ({ data, onChange }) => {
             ))}
           </Input>
           <small className="text-muted">
-            Blog Post can have more than 1 Category (Max 2)
+            Select one category for the Blog Post.
           </small>
         </FormGroup>
 
@@ -143,7 +164,7 @@ const ArticleForm = ({ data, onChange }) => {
             onChange={(e) => handleFormChange("summary", e.target.value)}
           />
           <small className="text-muted">
-            Summary Blog Post will be shown in Blog Post List page
+            Summary Blog Post will be shown in Blog Post List page.
           </small>
         </FormGroup>
       </Form>
@@ -151,7 +172,11 @@ const ArticleForm = ({ data, onChange }) => {
       {/* Sections Form */}
       <SectionsForm
         sections={formData.sections}
-        onChange={handleSectionsChange}
+        onChange={(sections) => handleFormChange("sections", sections)}
+      />
+      <MetaDataForm
+        metaData={formData.meta_data}
+        onChange={(metaData) => handleFormChange("meta_data", metaData)}
       />
     </div>
   );

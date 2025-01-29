@@ -2,6 +2,8 @@ import React from 'react';
 import { Form, FormGroup, Label, Input, Button, Row, Col, Card, CardBody } from 'reactstrap';
 
 const SectionsForm = ({ sections = [], onChange }) => {
+  
+  // Fungsi untuk mengubah nilai field pada setiap section
   const handleSectionChange = (index, field, value) => {
     const updatedSections = sections.map((section, i) =>
       i === index ? { ...section, [field]: value } : section
@@ -9,13 +11,27 @@ const SectionsForm = ({ sections = [], onChange }) => {
     onChange(updatedSections);
   };
 
+  // Fungsi untuk menangani perubahan pada file gambar
+  const handleSectionImageChange = (index, event) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      const updatedSections = sections.map((section, i) =>
+        i === index ? { ...section, image: file } : section
+      );
+      onChange(updatedSections);
+    }
+  };
+
+  // Fungsi untuk menambahkan section baru
   const handleAddSection = () => {
     onChange([
       ...sections,
-      { title: '', file: null, description: '', productCollection: '' },
+      { id: null, title: '', description: '', image: null }
     ]);
   };
 
+  // Fungsi untuk menghapus section tertentu
   const handleRemoveSection = (index) => {
     const updatedSections = sections.filter((_, i) => i !== index);
     onChange(updatedSections);
@@ -24,10 +40,12 @@ const SectionsForm = ({ sections = [], onChange }) => {
   return (
     <div className="mt-5">
       <h4 className="mb-3">Sections</h4>
+      
       {sections.map((section, index) => (
         <Card key={index} className="mb-3 shadow-sm border-0 p-3">
           <CardBody>
             <h6 className="mb-4 font-weight-bold">Section #{index + 1}</h6>
+
             <Row>
               {/* Title Field */}
               <Col md={12}>
@@ -47,23 +65,34 @@ const SectionsForm = ({ sections = [], onChange }) => {
               {/* File Upload Field */}
               <Col md={12}>
                 <FormGroup>
-                  <Label for={`section-file-${index}`}>File</Label>
+                  <Label for={`section-image-${index}`}>Image</Label>
                   <Input
                     type="file"
-                    id={`section-file-${index}`}
-                    onChange={(e) =>
-                      handleSectionChange(index, 'file', e.target.files[0])
-                    }
+                    id={`section-image-${index}`}
+                    onChange={(e) => handleSectionImageChange(index, e)}
                   />
+                  {section.image && (
+                    <div style={{ marginTop: '10px' }}>
+                      <p style={{ fontSize: '12px', color: '#888' }}>Preview:</p>
+                      <img
+                        src={typeof section.image === 'string' ? section.image : URL.createObjectURL(section.image)}
+                        alt={`Section ${index + 1}`}
+                        style={{
+                          maxWidth: '150px',
+                          maxHeight: '100px',
+                          border: '1px solid #ddd',
+                          borderRadius: '5px',
+                        }}
+                      />
+                    </div>
+                  )}
                 </FormGroup>
               </Col>
 
               {/* Description Field */}
               <Col md={12}>
                 <FormGroup>
-                  <Label for={`section-description-${index}`}>
-                    Description
-                  </Label>
+                  <Label for={`section-description-${index}`}>Description</Label>
                   <Input
                     type="textarea"
                     id={`section-description-${index}`}
@@ -75,29 +104,8 @@ const SectionsForm = ({ sections = [], onChange }) => {
                   />
                 </FormGroup>
               </Col>
-
-              {/* Product Collection Field */}
-              <Col md={12}>
-                <FormGroup>
-                  <Label for={`section-product-${index}`}>
-                    Product Collection
-                  </Label>
-                  <Input
-                    type="text"
-                    id={`section-product-${index}`}
-                    placeholder="Enter product collection"
-                    value={section.productCollection || ''}
-                    onChange={(e) =>
-                      handleSectionChange(
-                        index,
-                        'productCollection',
-                        e.target.value
-                      )
-                    }
-                  />
-                </FormGroup>
-              </Col>
             </Row>
+
             {/* Remove Section Button */}
             <Row>
               <Col md={12} className="d-flex justify-content-end">
@@ -110,6 +118,7 @@ const SectionsForm = ({ sections = [], onChange }) => {
                 </Button>
               </Col>
             </Row>
+
           </CardBody>
         </Card>
       ))}

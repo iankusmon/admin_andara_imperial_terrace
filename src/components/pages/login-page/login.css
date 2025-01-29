@@ -1,0 +1,113 @@
+/* General Container */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f7f8fc;
+  }
+  
+  /* Card Styling */
+  .login-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: #ffffff;
+  }
+  
+  /* Header Styling */
+  .login-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .login-header img {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .login-header h3 {
+    margin-top: 10px;
+    font-weight: bold;
+    font-size: 1.5rem;
+    background: linear-gradient(to right, #d6ae6c, #886224); /* Gradien warna */
+    -webkit-background-clip: text; /* Klip gradien ke teks */
+    -webkit-text-fill-color: transparent; /* Buat latar belakang teks transparan */
+  }
+  
+  /* Input Field */
+  .login-label {
+    font-weight: bold;
+    color: #555555;
+  }
+  
+  .input-icon-container {
+    position: relative;
+  }
+  
+  .input-icon {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: #6c757d;
+  }
+  
+  .login-input {
+    border: 1px solid #cccccc;
+    border-radius: 5px;
+    padding: 10px;
+    padding-left: 35px; /* Space for icon */
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  
+  .login-input:focus {
+    border-color: #333333;
+    outline: none;
+  }
+  
+  /* Error Messages */
+  .login-error {
+    color: #ff4d4f;
+    font-size: 0.875rem;
+  }
+  
+  /* Submit Button */
+  .login-button {
+    background: linear-gradient(to right, #d6ae6c, #886224);
+    border: none;
+    color: #ffffff;
+    padding: 12px 20px;
+    font-weight: bold;
+    font-size: 1rem;
+    width: 100%;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .login-button:hover {
+    background: linear-gradient(to right, #c3982e, #77511b);
+  }
+  
+  /* Password Container */
+  .password-container {
+    position: relative;
+  }
+  
+  .password-container .login-input {
+    padding-right: 40px;
+  }
+  
+  .password-container .password-toggle-icon {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #6c757d;
+  }
+  

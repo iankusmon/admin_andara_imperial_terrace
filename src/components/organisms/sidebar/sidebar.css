@@ -1,0 +1,89 @@
+.sidenav {
+  background-color: #616C5E;
+  padding: 20px;
+  height: 100vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+.sidenav-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  margin-bottom: 20px;
+}
+
+.logo-container {
+  flex-shrink: 0;
+}
+
+.sidebar-logo {
+  height: 100px;
+  width: auto;
+  max-width: 120px;
+}
+
+.text-container {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+  color: #fff;
+}
+
+.sidebar-title {
+  font-size: 18px;
+  color: #fff;
+  font-weight: bold;
+  margin: 0;
+}
+
+.sidebar-subtitle {
+  font-size: 14px;
+  color: #ccc;
+  margin: 0;
+}
+
+.navbar-inner {
+  flex-grow: 1;
+  margin-bottom: 20px;
+}
+
+.nav-link {
+  color: #fff !important;
+  font-size: 16px;
+  padding: 10px 15px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  text-align: left;
+  background-color: transparent;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.nav-link.active {
+  background-color: #D4A956;
+  color: #ffffff !important;
+}
+
+.nav-link:hover {
+  background-color: #4e574e;
+  color: #ffffff !important;
+}
+
+.nav-item {
+  margin-left: 10px;
+}
+
+.sidenav-footer {
+  text-align: center;
+  margin-top: auto;
+}
+
+button {
+  margin: 5px 0;
+}

@@ -12,6 +12,18 @@ import DownPaymentListPage from 'domains/down-payment/pages/list-page'
 import DownPaymentEditPage from 'domains/down-payment/pages/down-payment-edit-page'
 import AjbDocumentListPage from 'domains/ajb-document/pages/ajb-document-list-page/ajb_document_list_page'
 import PpjbDocumentListPage from 'domains/ppjb-document/pages/ppjb-document-list-page/ppjb_document_list_page'
+import ArticleCreatePage from 'domains/article/pages/article-create-page/article_create_page'
+import ArticleListPage from 'domains/article/pages/list-page'
+import ArticleEditPage from 'domains/article/pages/article-edit-page'
+import Homepage from 'domains/landingpage/homepage/pages/list-page'
+import LandingPageListPage from 'domains/landingpage/pages/list-page'
+import MainBannerListPage from 'domains/landingpage/homepage/main-banner-section/pages/list-page'
+import BannerEditPage from 'domains/landingpage/homepage/main-banner-section/pages/main-banner-edit-page'
+import LandmarkBannerEditPage from 'domains/landingpage/homepage/landmark-banner-section/pages/landmark-banner-page/landmark-banner_edit_page'
+import LandownerListPage from 'domains/land-owner/pages/list-page'
+import LandownerDetailPage from 'domains/land-owner/pages/land-owner-detail-page/land_owner_detail_page'
+import AgenAffiliatePage from 'domains/agen-affiliate/pages/list-page/agen_affiliate_list_page'
+import AgenAffiliateDetailPage from 'domains/agen-affiliate/pages/agen-affiliate-detail-page/agen_affiliate_detail_page'
 
 const super_admin_routes = {
   collapse  : true,
@@ -116,6 +128,99 @@ const super_admin_routes = {
       layout    : '/app'
     },
     {
+      path      : '/super_admin/articles',
+      name      : 'Article',
+      miniName  : 'ART',
+      component : ArticleListPage,
+      layout    : '/app'
+    },
+    {
+      path      : '/super_admin/articles/create',
+      name      : 'Create Article',
+      miniName  : 'CRT',
+      component : ArticleCreatePage,
+      layout    : '/app'
+    },
+    {
+      path      : '/super_admin/articles/edit/:id',
+      name      : 'Update Articles',
+      miniName  : 'UART',
+      component : ArticleEditPage,
+      layout    : '/app',
+      invisible : true
+    },
+    {
+      path      : '/super_admin/landowner',
+      name      : 'Land Owner',
+      miniName  : 'LO',
+      component : LandownerListPage,
+      layout    : '/app',
+      // invisible : true
+    },
+    {
+      path      : '/super_admin/landowner-detail',
+      name      : 'Land Owner Detail',
+      miniName  : 'LOD',
+      component :  LandownerDetailPage,
+      layout    : '/app',
+      invisible : true
+    },
+    {
+      path      : '/super_admin/agenaffiliate',
+      name      : 'Agen Affiliate',
+      miniName  : 'AA',
+      component : AgenAffiliatePage,
+      layout    : '/app',
+      // invisible : true
+    },
+    {
+      path      : '/super_admin/agenaffiliate-detail',
+      name      : 'Agen Affiliate',
+      miniName  : 'AADP',
+      component : AgenAffiliateDetailPage,
+      layout    : '/app',
+      invisible : true
+    },
+   
+    {
+      path      : '/super_admin/landingpagelist',
+      name      : 'Landing Page List',
+      miniName  : 'LP',
+      component :  LandingPageListPage,
+      layout    : '/app'
+    },
+    {
+      path      : '/super_admin/homepage',
+      name      : 'Home Page',
+      miniName  : 'HP',
+      component :  Homepage,
+      layout    : '/app'
+    },
+    {
+      path      : '/super_admin/mainbannerlistpage',
+      name      : 'Main Banner List Page',
+      miniName  : 'HP',
+      component :  MainBannerListPage,
+      layout    : '/app',
+      invisible : true
+    },
+    {
+      path      : '/super_admin/bannerEditPage',
+      name      : 'Banner Edit Page',
+      miniName  : 'HP',
+      component :  BannerEditPage,
+      layout    : '/app',
+      invisible : true
+    },
+    {
+      path      : '/super_admin/landmarkBannerEditPage',
+      name      : 'LandmarkBannerEditPage',
+      miniName  : 'LKBE',
+      component :  LandmarkBannerEditPage,
+      layout    : '/app',
+      // invisible : true
+    },
+    {
       path      : '/update-password',
       name      : 'Update Password',
       miniName  : 'R',
@@ -130,7 +235,7 @@ const super_admin_routes = {
       component : UpdatePasswordPage,
       layout    : '/app',
       redirect  : true
-    }
+    },
   ]
 }
 
