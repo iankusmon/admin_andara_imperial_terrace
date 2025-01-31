@@ -1,7 +1,7 @@
 import React from "react";
 import "./main_banner_form.css";
 
-const MainBannerForm = ({ formData, onFormChange }) => {
+const MainBannerFormMobile = ({ formData, onFormChange }) => {
   
   const handleInputChange = (field, value) => {
     onFormChange(field, value);
@@ -91,4 +91,4 @@ const MainBannerForm = ({ formData, onFormChange }) => {
   );
 };
 
-export default MainBannerForm;
+export default MainBannerFormMobile;

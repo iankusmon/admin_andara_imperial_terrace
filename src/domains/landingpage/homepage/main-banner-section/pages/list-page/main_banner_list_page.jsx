@@ -1,9 +1,10 @@
-import React, { useState, useCallback } from 'react';
-import { useHistory } from 'react-router';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useHistory } from 'react-router-dom'; 
 import { Card, Row, Col } from 'reactstrap';
 import TitlePage from 'components/atoms/title-page';
-import { MainBannerTable, MobileMainBannerTable } from 'domains/landingpage/homepage/main-banner-section/organisms/table'; // Pastikan path benar
+import { MainBannerTable, MobileMainBannerTable } from 'domains/landingpage/homepage/main-banner-section/organisms/table';
 import PropTypes from 'prop-types';
+import CmsHomepagesSectionsMainBannersAPI from 'api/v2/admins/cms/homepages/sections-main-banners/cms-main-banners-api-v2';
 
 const propTypes = {
   pageUtils: PropTypes.shape({
@@ -18,42 +19,63 @@ const MainBannerListPage = ({ pageUtils }) => {
   const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
 
-  // Simulasi Fetch Data dari Server
-  const handleFetchMainBanners = (tableState) => {
+  // Fungsi Fetch Data dari API
+  const handleFetchMainBanners = async (tableState) => {
     setIsLoading(true);
+    try {
+      const response = await CmsHomepagesSectionsMainBannersAPI.get({ tableState, filters: {} });
+      console.log("API Response:", response.data);
 
-    const dummyData = [
-      { id: 1, title: 'Web Banner 1', category: 'Promo', url: '/promo-1', active_status: 'active', section: 'web' },
-      { id: 2, title: 'Web Banner 2', category: 'Seasonal', url: '/promo-2', active_status: 'inactive', section: 'web' },
-      { id: 3, title: 'Mobile Banner 1', category: 'Promo', url: '/mobile-1', active_status: 'active', section: 'mobile' },
-      { id: 4, title: 'Mobile Banner 2', category: 'Seasonal', url: '/mobile-2', active_status: 'inactive', section: 'mobile' },
-    ];
-
-    setTimeout(() => {
-      setMainBanners(dummyData.slice(0, tableState.pageSize || 10));
-      setPagination({
-        pageIndex: tableState.pageIndex || 1,
-        pageSize: tableState.pageSize || 10,
-        totalCount: dummyData.length,
-      });
+      if (response && response.data) {
+        const rawData = response.data.map(item => ({
+          ...item,
+          section: item.section || 'web',
+        }));
+        setMainBanners(rawData);
+        setPagination({
+          pageIndex: tableState.pageIndex || 1,
+          pageSize: tableState.pageSize || 10,
+          totalCount: rawData.length,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching main banners:", error);
+      if (pageUtils?.setApiErrorMsg) {
+        pageUtils.setApiErrorMsg("Gagal mengambil data banner.");
+      }
+    } finally {
       setIsLoading(false);
-    }, 500);
+    }
   };
 
-  const handleSelectRow = useCallback(
-    (datum) => {
-      const { id, section } = datum; // Ambil ID dan platform
-      history.push({
-        pathname: `/app/super_admin/bannerEditPage`,
-        state: { id, platform: section }, // Kirim data ID dan platform
-      });
-    },
-    [history]
-  );
+  // Panggil API saat komponen pertama kali dimuat
+  useEffect(() => {
+    handleFetchMainBanners({ pageIndex: 1, pageSize: 10 });
+  }, []);
+
+  // Navigasi ke halaman edit banner
+  const handleSelectRow = useCallback((datum) => {
+    const { id, section } = datum;
+    let path;
+  
+    // Tentukan path berdasarkan section (web/mobile)
+    if (section === "mobile") {
+      path = `/app/super_admin/bannerEditMobilePage/${id}`;
+    } else {
+      path = `/app/super_admin/bannerEditPage/${id}`;
+    }
+  
+    console.log("Navigating to:", path);  // Log URL yang akan dituju
+    history.push(path);  // Arahkan ke URL yang sesuai
+  }, [history]);
+  
 
   // Filter Data untuk Web dan Mobile Sections
   const webBanners = mainBanners.filter((banner) => banner.section === 'web');
   const mobileBanners = mainBanners.filter((banner) => banner.section === 'mobile');
+
+  // Jika mobile banners kosong, gunakan data web
+  const combinedBanners = mobileBanners.length ? mobileBanners : webBanners;
 
   return (
     <>
@@ -80,7 +102,7 @@ const MainBannerListPage = ({ pageUtils }) => {
           <Card>
             <h5 className="p-3">Mobile Section</h5>
             <MobileMainBannerTable
-              data={mobileBanners}
+              data={combinedBanners}
               pagination={pagination}
               onFetchData={handleFetchMainBanners}
               isLoading={isLoading}
@@ -98,5 +120,4 @@ const MainBannerListPage = ({ pageUtils }) => {
 };
 
 MainBannerListPage.propTypes = propTypes;
-
 export default MainBannerListPage;

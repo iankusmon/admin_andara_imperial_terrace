@@ -56,6 +56,22 @@ const MobileMainBannerTableColumns = ({ buttonText, buttonColour, onButtonClick 
       accessor: 'title',
     },
     {
+      Header: 'Deskripsi',
+      accessor: 'description',
+    },
+    {
+      Header: 'URL Gambar',
+      accessor: 'image_url',
+    },
+    {
+      Header: 'URL Link',
+      accessor: 'link_url',
+    },
+    {
+      Header: 'Tanggal',
+      accessor: 'updated_at',
+    },
+    {
       Header: 'Status Aktif',
       accessor: 'active_status',
       Filter: StatusFilter, // Filter untuk status

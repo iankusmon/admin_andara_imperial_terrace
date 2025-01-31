@@ -56,12 +56,20 @@ const MainBannerTableColumns = ({ buttonText, buttonColour, onButtonClick }) => 
       accessor: 'title',
     },
     {
-      Header: 'Kategori',
-      accessor: 'category',
+      Header: 'Deskripsi',
+      accessor: 'description',
     },
     {
-      Header: 'URL',
-      accessor: 'url',
+      Header: 'URL Gambar',
+      accessor: 'image_url',
+    },
+    {
+      Header: 'URL Link',
+      accessor: 'link_url',
+    },
+    {
+      Header: 'Tanggal',
+      accessor: 'updated_at',
     },
     {
       Header: 'Status Aktif',

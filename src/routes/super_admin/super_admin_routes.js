@@ -18,7 +18,8 @@ import ArticleEditPage from 'domains/article/pages/article-edit-page'
 import Homepage from 'domains/landingpage/homepage/pages/list-page'
 import LandingPageListPage from 'domains/landingpage/pages/list-page'
 import MainBannerListPage from 'domains/landingpage/homepage/main-banner-section/pages/list-page'
-import BannerEditPage from 'domains/landingpage/homepage/main-banner-section/pages/main-banner-edit-page'
+import { BannerEditPage, BannerEditPageMobile } from 'domains/landingpage/homepage/main-banner-section/pages/main-banner-edit-page/index';
+
 import LandmarkBannerEditPage from 'domains/landingpage/homepage/landmark-banner-section/pages/landmark-banner-page/landmark-banner_edit_page'
 import LandownerListPage from 'domains/land-owner/pages/list-page'
 import LandownerDetailPage from 'domains/land-owner/pages/land-owner-detail-page/land_owner_detail_page'
@@ -205,10 +206,18 @@ const super_admin_routes = {
       invisible : true
     },
     {
-      path      : '/super_admin/bannerEditPage',
+      path      : '/super_admin/bannerEditPage/:id',
       name      : 'Banner Edit Page',
       miniName  : 'HP',
       component :  BannerEditPage,
+      layout    : '/app',
+      invisible : true
+    },
+    {
+      path      : '/super_admin/bannerEditMobilePage/:id',
+      name      : 'Banner Edit Page Mobile',
+      miniName  : 'BEPM',
+      component :  BannerEditPageMobile,
       layout    : '/app',
       invisible : true
     },

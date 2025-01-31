@@ -1,12 +1,12 @@
 import React from "react";
 
-const MainBannerPreview = ({ data }) => {
+const MainBannerMobilePreview = ({ data }) => {
   return (
     <div
       style={{
         fontFamily: "Arial, sans-serif",
         lineHeight: 1.6,
-        maxWidth: "1200px", // Sesuaikan lebar maksimal kontainer
+        maxWidth: "480px", // Sesuaikan lebar maksimal kontainer
         margin: "0 auto",
       }}
     >
@@ -34,8 +34,8 @@ const MainBannerPreview = ({ data }) => {
             src={data.image_url}
             alt={data?.title || "No Alt Text"}
             style={{
-              width: "1200px",
-              height: "270px",
+              width: "480px",
+              height: "314px",
               objectFit: "cover",
             }}
           />
@@ -62,4 +62,4 @@ const MainBannerPreview = ({ data }) => {
   );
 };
 
-export default MainBannerPreview;
+export default MainBannerMobilePreview;

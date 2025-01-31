@@ -4,20 +4,20 @@ import DataTable from 'components/organisms/data-table';
 import MainBannerTableColumns from './main-banner-table-columns';
 
 const propTypes = {
-  data: PropTypes.array.isRequired, // Data untuk ditampilkan di tabel
+  data: PropTypes.array.isRequired,
   pagination: PropTypes.shape({
-    pageIndex: PropTypes.number.isRequired, // Halaman saat ini
-    pageSize: PropTypes.number.isRequired, // Jumlah item per halaman
-    totalCount: PropTypes.number, // Total jumlah item (opsional)
-  }), // Objek pagination dari endpoint
-  onFetchData: PropTypes.func.isRequired, // Fungsi untuk mem-fetch data
-  rowButtonProps: PropTypes.shape({
-    buttonText: PropTypes.string, // Teks tombol pada setiap baris
-    buttonColour: PropTypes.string, // Warna tombol
-    onButtonClick: PropTypes.func, // Fungsi yang dipanggil saat tombol diklik
+    pageIndex: PropTypes.number.isRequired,
+    pageSize: PropTypes.number.isRequired,
+    totalCount: PropTypes.number,
   }),
-  hiddenColumns: PropTypes.arrayOf(PropTypes.string), // Kolom yang disembunyikan berdasarkan id
-  isLoading: PropTypes.bool, // Indikator apakah data sedang dimuat
+  onFetchData: PropTypes.func.isRequired,
+  rowButtonProps: PropTypes.shape({
+    buttonText: PropTypes.string,
+    buttonColour: PropTypes.string,
+    onButtonClick: PropTypes.func,
+  }),
+  hiddenColumns: PropTypes.arrayOf(PropTypes.string),
+  isLoading: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -29,15 +29,11 @@ const defaultProps = {
   isLoading: false,
 };
 
-/**
- * Komponen untuk menampilkan tabel Main Banner dengan kolom spesifik.
- * @param {Object} props - Properti untuk komponen MainBannerTable.
- */
 const MainBannerTable = ({
   data,
   pagination,
   onFetchData,
-  rowButtonProps = {}, // Nilai default untuk pengamanan
+  rowButtonProps = {},
   hiddenColumns,
   isLoading,
 }) => {
@@ -47,7 +43,18 @@ const MainBannerTable = ({
     onButtonClick = () => {},
   } = rowButtonProps;
 
-  // Menggunakan useMemo untuk menghindari pembuatan ulang kolom saat tidak diperlukan
+  console.log('Data received:', data);
+  console.log('Pagination:', pagination);
+
+  const adjustedData = data.map(item => ({
+    id: item.id,
+    title: item.title || 'No Title',
+    description: item.description || 'No Description',
+    image_url: item.image_url || 'No Image URL',
+    link_url: item.link_url || 'No Link URL',
+    updated_at: item.updated_at || 'No Update',
+  }));
+
   const columns = useMemo(
     () =>
       MainBannerTableColumns({
@@ -60,7 +67,7 @@ const MainBannerTable = ({
 
   return (
     <DataTable
-      data={data}
+      data={adjustedData}
       columns={columns}
       pagination={pagination}
       onFetchData={onFetchData}

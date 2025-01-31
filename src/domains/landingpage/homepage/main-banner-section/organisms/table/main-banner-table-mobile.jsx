@@ -47,6 +47,15 @@ const MobileMainBannerTable = ({
     onButtonClick = () => {},
   } = rowButtonProps;
 
+  const adjustedData = data.map(item => ({
+    id: item.id,
+    title: item.title || 'No Title',
+    description: item.description || 'No Description',
+    image_url: item.image_url || 'No Image URL',
+    link_url: item.link_url || 'No Link URL',
+    updated_at: item.updated_at || 'No Update',
+  }));
+
   // Menggunakan useMemo untuk menghindari pembuatan ulang kolom saat tidak diperlukan
   const columns = useMemo(
     () =>
@@ -60,7 +69,7 @@ const MobileMainBannerTable = ({
 
   return (
     <DataTable
-      data={data}
+      data={adjustedData}
       columns={columns}
       pagination={pagination}
       onFetchData={onFetchData}
