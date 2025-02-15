@@ -1,1 +1,1 @@
-export { default } from './agen_affiliate_list_page'
+export { default } from './survey_calon_customer_list_page'

@@ -3,7 +3,7 @@ import { Form, FormGroup, Label, Input, Button } from "reactstrap";
 
 const statusOptions = ["Proses", "Disetujui", "Ditolak"];
 
-const AgenAffiliateForm = ({ data, onChange }) => {
+const SurveyCalonCustomerDetailForm = ({ data, onChange }) => {
   const [formData, setFormData] = useState({
     nik: data?.nik || "",
     phone: data?.phone || "",
@@ -42,7 +42,7 @@ const AgenAffiliateForm = ({ data, onChange }) => {
 
   return (
     <div className="form-container">
-      <h3>Agen Affiliate Form</h3>
+      <h3>Survey Calon Customer Detail Form</h3>
       <Form>
         <div className="grid-container">
           {/* NIK */}
@@ -144,32 +144,6 @@ const AgenAffiliateForm = ({ data, onChange }) => {
               ))}
             </Input>
           </FormGroup>
-
-          {/* KTP Upload */}
-          <FormGroup className="grid-item">
-            <Label for="ktp">Kartu Tanda Penduduk (KTP)</Label>
-            <Input
-              type="file"
-              id="ktp"
-              onChange={(e) => handleFormChange("ktp", e.target.files[0])}
-            />
-            {formData.ktp && (
-              <img src={URL.createObjectURL(formData.ktp)} alt="KTP Preview" className="preview-img" />
-            )}
-          </FormGroup>
-
-          {/* KK Upload */}
-          <FormGroup className="grid-item">
-            <Label for="kk">Kartu Keluarga (KK)</Label>
-            <Input
-              type="file"
-              id="kk"
-              onChange={(e) => handleFormChange("kk", e.target.files[0])}
-            />
-            {formData.kk && (
-              <img src={URL.createObjectURL(formData.kk)} alt="KK Preview" className="preview-img" />
-            )}
-          </FormGroup>
         </div>
 
         {/* Buttons */}
@@ -179,40 +153,8 @@ const AgenAffiliateForm = ({ data, onChange }) => {
           <Button color="warning">Save</Button>
         </div>
       </Form>
-
-      {/* CSS Styling */}
-      <style jsx>{`
-        .form-container {
-          background: white;
-          padding: 20px;
-          border-radius: 10px;
-        }
-        .grid-container {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 20px;
-        }
-        .grid-item {
-          display: flex;
-          flex-direction: column;
-        }
-        .button-container {
-          margin-top: 20px;
-          display: flex;
-          gap: 10px;
-          justify-content: flex-end;
-        }
-        .preview-img {
-          width: 100px;
-          height: auto;
-          margin-top: 10px;
-        }
-        h3 {
-          margin-bottom: 20px;
-        }
-      `}</style>
     </div>
   );
 };
 
-export default AgenAffiliateForm;
+export default SurveyCalonCustomerDetailForm;

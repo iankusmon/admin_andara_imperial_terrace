@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { RowButton, SelectTableFilter } from 'components/atoms';
+import { RowButton } from 'components/atoms';
 
 const propTypes = {
   buttonText: PropTypes.string.isRequired,
@@ -17,9 +17,9 @@ const actionCellPropTypes = {
 };
 
 /**
- * Columns definition for Agent Affiliate Table
+ * Columns definition for Survey Calon Customer Table
  */
-const agentAffiliateColumns = ({ buttonText, buttonColour, onButtonClick }) => {
+const surveyCalonCustomerColumns = ({ buttonText, buttonColour, onButtonClick }) => {
   const ActionCell = ({ cell: { row } }) => (
     <RowButton
       data={row.original}
@@ -33,25 +33,25 @@ const agentAffiliateColumns = ({ buttonText, buttonColour, onButtonClick }) => {
 
   return [
     {
-      Header: 'No',
-      accessor: 'no',
-      disableFilters: true,
-      Cell: ({ cell }) => cell.row.index + 1, // Auto-generate row number
-    },
-    {
       Header: 'ID',
-      accessor: 'agent_id',
-     
+      accessor: 'id',
     },
     {
-      Header: 'Nama',
+      Header: 'Nama Calon Customer',
       accessor: 'name',
-     
     },
     {
-      Header: 'Daerah',
-      accessor: 'region',
-     
+      Header: 'Nomor Telepon',
+      accessor: 'phone',
+    },
+    {
+      Header: 'Tanggal Survey',
+      accessor: 'survey_date',
+    },
+    {
+      Header: 'Status',
+      accessor: 'status',
+      Cell: ({ cell }) => (cell.value === 'berhasil' ? 'Berhasil' : 'Proses'),
     },
     {
       Header: 'Aksi',
@@ -61,6 +61,6 @@ const agentAffiliateColumns = ({ buttonText, buttonColour, onButtonClick }) => {
   ];
 };
 
-agentAffiliateColumns.propTypes = propTypes;
+surveyCalonCustomerColumns.propTypes = propTypes;
 
-export default agentAffiliateColumns;
+export default surveyCalonCustomerColumns;

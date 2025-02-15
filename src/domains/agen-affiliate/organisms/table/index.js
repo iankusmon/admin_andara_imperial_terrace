@@ -1,1 +1,1 @@
-export { default as AgentAffiliateTable } from './agen-affiliate-table';
+export { default as SurveyCalonCustomerTable } from './survey-calon-customer-table';

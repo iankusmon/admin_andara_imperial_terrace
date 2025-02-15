@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import DataTable from 'components/organisms/data-table';
-import agentAffiliateColumns from './agen-affiliate-columns';
+import surveyCalonCustomerColumns from './survey-calon-customer-columns';
 
 const propTypes = {
   data: PropTypes.array.isRequired,
@@ -37,9 +37,9 @@ const defaultProps = {
 };
 
 /**
- * Agent Affiliate Table Component
+ * Survey Calon Customer Table Component
  */
-const AgentAffiliateTable = ({
+const SurveyCalonCustomerTable = ({
   data = [],
   pagination = defaultProps.pagination,
   onFetchData,
@@ -50,11 +50,11 @@ const AgentAffiliateTable = ({
   const { buttonText, buttonColour, onButtonClick } = rowButtonProps;
 
   const columns = useMemo(
-    () => agentAffiliateColumns({ buttonText, buttonColour, onButtonClick }),
+    () => surveyCalonCustomerColumns({ buttonText, buttonColour, onButtonClick }),
     [buttonText, buttonColour, onButtonClick]
   );
 
-  console.debug("AgentAffiliateTable received data:", data);
+  console.debug("SurveyCalonCustomerTable received data:", data);
   console.debug("Pagination Info:", pagination);
 
   return (
@@ -71,7 +71,7 @@ const AgentAffiliateTable = ({
   );
 };
 
-AgentAffiliateTable.propTypes = propTypes;
-AgentAffiliateTable.defaultProps = defaultProps;
+SurveyCalonCustomerTable.propTypes = propTypes;
+SurveyCalonCustomerTable.defaultProps = defaultProps;
 
-export default AgentAffiliateTable;
+export default SurveyCalonCustomerTable;
