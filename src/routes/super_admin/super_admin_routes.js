@@ -19,12 +19,12 @@ import Homepage from 'domains/landingpage/homepage/pages/list-page'
 import LandingPageListPage from 'domains/landingpage/pages/list-page'
 import MainBannerListPage from 'domains/landingpage/homepage/main-banner-section/pages/list-page'
 import { BannerEditPage, BannerEditPageMobile } from 'domains/landingpage/homepage/main-banner-section/pages/main-banner-edit-page/index';
-
 import LandmarkBannerEditPage from 'domains/landingpage/homepage/landmark-banner-section/pages/landmark-banner-page/landmark-banner_edit_page'
 import LandownerListPage from 'domains/land-owner/pages/list-page'
 import LandownerDetailPage from 'domains/land-owner/pages/land-owner-detail-page/land_owner_detail_page'
-import AgenAffiliatePage from 'domains/agen-affiliate/pages/list-page/agen_affiliate_list_page'
-import AgenAffiliateDetailPage from 'domains/agen-affiliate/pages/agen-affiliate-detail-page/agen_affiliate_detail_page'
+import  {SurveyCalonCustomerPage , KomisiPage} from 'domains/agen-affiliate/pages/list-page/index' 
+import {SurveyCalonCustomerDetailPage,RiwayatTransaksiSurveyCalonCustomerDetailPage,KomisiDetailPage,UploadBuktiTransferKomisiDetailPage} from 'domains/agen-affiliate/pages/agen-affiliate-detail-page/index'
+
 
 const super_admin_routes = {
   collapse  : true,
@@ -167,20 +167,52 @@ const super_admin_routes = {
       invisible : true
     },
     {
-      path      : '/super_admin/agenaffiliate',
-      name      : 'Agen Affiliate',
+      path      : '/super_admin/survey_calon_customer',
+      name      : 'Survey Calon Customer Page',
       miniName  : 'AA',
-      component : AgenAffiliatePage,
+      component : SurveyCalonCustomerPage,
       layout    : '/app',
       // invisible : true
     },
     {
-      path      : '/super_admin/agenaffiliate-detail',
-      name      : 'Agen Affiliate',
+      path      : '/super_admin/surveycaloncustomer/:id',
+      name      : 'Survey Calon Customer Detail Page',
       miniName  : 'AADP',
-      component : AgenAffiliateDetailPage,
+      component : SurveyCalonCustomerDetailPage,
       layout    : '/app',
       invisible : true
+    },
+   
+    {
+      path      : '/super_admin/riwayattransaksisurveycaloncustomer/:id',
+      name      : 'Riwayat Transaksi Survey Calon Customer Detail Page',
+      miniName  : 'AADP',
+      component : RiwayatTransaksiSurveyCalonCustomerDetailPage,
+      layout    : '/app',
+      invisible : true
+    },
+    {
+      path      : '/super_admin/komisi',
+      name      : 'komisi',
+      miniName  : 'AA',
+      component :  KomisiPage,
+      layout    : '/app',
+    },
+    {
+      path      : '/super_admin/komisidetailpage/:id',
+      name      : 'KomisiDetailPage',
+      miniName  : 'AA',
+      component :  KomisiDetailPage,
+      layout    : '/app',
+      // invisible : true
+    },
+    {
+      path      : '/super_admin/transaction_history/:id',
+      name      : 'UploadBuktiTransferKomisiDetailPage',
+      miniName  : 'AA',
+      component :  UploadBuktiTransferKomisiDetailPage,
+      layout    : '/app',
+      // invisible : true
     },
    
     {
