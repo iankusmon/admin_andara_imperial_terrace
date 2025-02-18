@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router';
+import { useParams, useHistory } from 'react-router';
 import { Row, Col, Card, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import PropTypes from 'prop-types';
 import TitlePage from 'components/atoms/title-page';
@@ -12,24 +12,41 @@ const TAB = {
 };
 
 const BannerEditPageMobile = ({ pageUtils }) => {
-  const location = useLocation();
+  const { id } = useParams();
   const history = useHistory();
-  
-  const { id } = location.state || {};
 
-  const [bannerData, setBannerData] = useState({});
+  const [bannerData, setBannerData] = useState({
+    title: '',
+    image_url: '',
+    description: '',
+    link_url: '',
+    status: 'Enabled',
+  });
+
   const [activeTab, setActiveTab] = useState(TAB.PROFILE);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    console.log("Fetched ID from URL:", id);
+
     const fetchBannerData = async () => {
       try {
         const response = await CmsHomepagesSectionsMainBannersAPI.show(id);
-        setBannerData(response.data);
-        setIsLoading(false);
+        console.log("API Response:", response);
+
+        if (response && response.data) {
+          setBannerData({
+            title: response.data.title || '',
+            image_url: response.data.image_url || '',
+            description: response.data.description || '',
+            link_url: response.data.link_url || '',
+            status: response.data.status || 'Enabled',
+          });
+        }
       } catch (error) {
         console.error('Error fetching banner data:', error);
-        pageUtils.setApiErrorMsg('Gagal mengambil data banner.');
+        pageUtils.setApiErrorMsg('Failed to fetch banner data.');
+      } finally {
         setIsLoading(false);
       }
     };
@@ -42,24 +59,19 @@ const BannerEditPageMobile = ({ pageUtils }) => {
   };
 
   const handleSaveBanner = async () => {
-    if (!bannerData.title || !bannerData.description || !bannerData.image_url || !bannerData.link_url) {
-      pageUtils.setApiErrorMsg('Silakan isi semua field yang diperlukan.');
-      return;
-    }
-
     try {
       const response = await CmsHomepagesSectionsMainBannersAPI.update(id, bannerData);
       console.log('API Response:', response);
-      pageUtils.setAlertMsg('Banner telah diperbarui dengan sukses.');
+      pageUtils.setAlertMsg('Banner updated successfully.');
       history.push('/app/super_admin/mainbannerlistpage');
     } catch (error) {
-      console.error('Error saving banner data:', error.response?.data || error);
-      pageUtils.setApiErrorMsg('Gagal menyimpan data banner.');
+      console.error('Error saving banner:', error.response?.data || error);
+      pageUtils.setApiErrorMsg('Failed to save banner data.');
     }
   };
 
   const handleBackToList = () => {
-    history.push('/app/super_admin/mainbannerlistpage');
+    history.push('/app/super_admin/homepage');
   };
 
   const toggle = (tab) => {
@@ -98,13 +110,13 @@ const BannerEditPageMobile = ({ pageUtils }) => {
             <Col md={6}>
               <Card body>
                 <h5>Preview</h5>
-                <MainBannerMobilePreview data={bannerData} />
+                <MainBannerMobilePreview formData={bannerData} />
               </Card>
             </Col>
 
             <Col md={6}>
               <Card body>
-                <h5>Main Form</h5>
+                <h5>Main Banner Form</h5>
                 <MainBannerFormMobile formData={bannerData} onFormChange={handleFormChange} />
                 <Button color="primary" className="mt-3" onClick={handleSaveBanner}>
                   Save Banner

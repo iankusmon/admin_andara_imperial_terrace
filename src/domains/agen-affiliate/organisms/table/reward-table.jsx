@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import DataTable from 'components/organisms/data-table';
 import RewardColumns from './reward-columns';
@@ -21,7 +21,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-  data: [], // Default data kosong agar tidak error
+  data: [],
   pagination: {
     pageIndex: 0,
     pageSize: 10,
@@ -49,10 +49,8 @@ const RewardTable = ({
 }) => {
   const { buttonText, buttonColour, onButtonClick } = rowButtonProps;
 
-  const columns = useMemo(
-    () => RewardColumns({ buttonText, buttonColour, onButtonClick }),
-    [buttonText, buttonColour, onButtonClick]
-  );
+  // Langsung panggil RewardColumns tanpa useMemo
+  const columns = RewardColumns({ buttonText, buttonColour, onButtonClick });
 
   console.debug("RewardTable received data:", data);
   console.debug("Pagination Info:", pagination);
@@ -62,9 +60,11 @@ const RewardTable = ({
       data={data}
       columns={columns}
       pagination={pagination}
-      onFetchData={(newPageIndex, newPageSize) =>
-        onFetchData(newPageIndex ?? pagination.pageIndex, newPageSize ?? pagination.pageSize)
-      }
+      onFetchData={(newPageIndex, newPageSize) => {
+        if (onFetchData) {
+          onFetchData(newPageIndex ?? pagination.pageIndex, newPageSize ?? pagination.pageSize);
+        }
+      }}
       hiddenColumns={hiddenColumns}
       isLoading={isLoading}
     />

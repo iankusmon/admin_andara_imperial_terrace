@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom'; // Jika menggunakan react-router-dom untuk navigasi
+import { useHistory } from 'react-router-dom';
 import { RowButton } from 'components/atoms';
 
 const propTypes = {
@@ -17,24 +17,18 @@ const actionCellPropTypes = {
   }),
 };
 
-/**
- * Columns definition for Reward Table
- */
-const RewardColumns = ({ buttonText, buttonColour, onButtonClick }) => {
+const RewardColumns = ({ buttonColour }) => {
   const history = useHistory();
 
-  // Mendefinisikan handleSelectRow
   const handleSelectRow = useCallback(
     (datum, action) => {
       const { id } = datum;
       if (action === 'detailPencapaian') {
-        // Arahkan ke halaman Detail Pencapaian Reward
         history.push({
           pathname: `/app/super_admin/detail-pencapaian-reward/${id}`,
           state: { id },
         });
       } else if (action === 'detail') {
-        // Arahkan ke halaman Detail Reward
         history.push({
           pathname: `/app/super_admin/detail-reward-page/${id}`,
           state: { id },
@@ -44,19 +38,18 @@ const RewardColumns = ({ buttonText, buttonColour, onButtonClick }) => {
     [history]
   );
 
-  // Komponen untuk cell aksi
   const ActionCell = ({ cell: { row } }) => (
     <>
       <RowButton
         data={row.original}
         color={buttonColour}
-        onClick={() => handleSelectRow(row.original, 'detailPencapaian')} // Arahkan ke Detail Pencapaian
+        onClick={() => handleSelectRow(row.original, 'detailPencapaian')}
         text="Detail Pencapaian"
       />
       <RowButton
         data={row.original}
         color={buttonColour}
-        onClick={() => handleSelectRow(row.original, 'detail')} // Arahkan ke Detail Reward
+        onClick={() => handleSelectRow(row.original, 'detail')}
         text="Detail"
       />
     </>

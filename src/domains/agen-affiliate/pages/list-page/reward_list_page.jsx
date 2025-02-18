@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { useHistory } from 'react-router';
+import { useHistory } from 'react-router-dom'; // ✅ Gunakan react-router-dom, bukan react-router
 import { Card, Row, Col } from 'reactstrap';
 import TitlePage from 'components/atoms/title-page';
 import { RewardTable } from 'domains/agen-affiliate/organisms/table/index';
@@ -18,7 +18,7 @@ const RewardPage = ({ pageUtils }) => {
   const [isLoading, setIsLoading] = useState(false);
   const history = useHistory();
 
-  // Simulasi Fetch Data dari Server
+  // ✅ Simulasi Fetch Data dari Server
   const handleFetchRewards = (tableState) => {
     setIsLoading(true);
 
@@ -42,26 +42,26 @@ const RewardPage = ({ pageUtils }) => {
     }, 500);
   };
 
+  // ✅ Fungsi untuk menangani klik pada baris tabel
   const handleSelectRow = useCallback(
     (datum, action) => {
+      console.log("Row clicked:", datum, "Action:", action); // ✅ Debugging
+
+      if (!datum || !datum.id) {
+        console.error("Invalid datum:", datum);
+        return;
+      }
+
       const { id } = datum;
+
       if (action === 'detailPencapaian') {
-        // Arahkan ke halaman Detail Pencapaian Reward
-        history.push({
-          pathname: `/app/super_admin/detail-pencapaian-reward/${id}`,
-          state: { id },
-        });
+        history.push(`/app/super_admin/detail-pencapaian-reward/${id}`);
       } else if (action === 'detail') {
-        // Arahkan ke halaman Detail Reward
-        history.push({
-          pathname: `/app/super_admin/detail-reward-page/${id}`,
-          state: { id },
-        });
+        history.push(`/app/super_admin/detail-reward-page/${id}`);
       }
     },
     [history]
   );
-  
 
   return (
     <>

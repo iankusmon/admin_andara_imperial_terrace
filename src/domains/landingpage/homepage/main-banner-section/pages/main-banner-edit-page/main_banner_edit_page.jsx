@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router';
+import { useParams, useHistory } from 'react-router';
 import { Row, Col, Card, Button, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import PropTypes from 'prop-types';
 import TitlePage from 'components/atoms/title-page';
@@ -12,27 +12,36 @@ const TAB = {
 };
 
 const BannerEditPage = ({ pageUtils }) => {
-  const location = useLocation();
+  const { id } = useParams();
   const history = useHistory();
-  
-  // Ambil data dari location state jika ada
-  const { id } = location.state || {};
 
-  // State untuk menyimpan data banner
-  const [bannerData, setBannerData] = useState({});
+  const [bannerData, setBannerData] = useState({
+    title: '',
+    image_url: '',
+    description: '',
+    link_url: '',
+    status: 'Enabled',  // Default status can be adjusted if necessary
+  });
   const [activeTab, setActiveTab] = useState(TAB.PROFILE);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Fetch data banner saat komponen dimuat
   useEffect(() => {
     const fetchBannerData = async () => {
       try {
         const response = await CmsHomepagesSectionsMainBannersAPI.show(id);
-        setBannerData(response.data);
-        setIsLoading(false);
+        if (response && response.data) {
+          setBannerData({
+            title: response.data.title || '',
+            image_url: response.data.image_url || '',
+            description: response.data.description || '',
+            link_url: response.data.link_url || '',
+            status: response.data.status || 'Enabled',
+          });
+        }
       } catch (error) {
         console.error('Error fetching banner data:', error);
-        pageUtils.setApiErrorMsg('Gagal mengambil data banner.');
+        pageUtils.setApiErrorMsg('Failed to fetch banner data.');
+      } finally {
         setIsLoading(false);
       }
     };
@@ -40,44 +49,32 @@ const BannerEditPage = ({ pageUtils }) => {
     fetchBannerData();
   }, [id, pageUtils]);
 
-  // Update state ketika form diubah
   const handleFormChange = (field, value) => {
     setBannerData((prevData) => ({ ...prevData, [field]: value }));
   };
 
-  // Simpan perubahan banner
   const handleSaveBanner = async () => {
-    // Cek apakah semua field yang diperlukan sudah terisi
-    if (!bannerData.title || !bannerData.description || !bannerData.image_url || !bannerData.link_url) {
-      pageUtils.setApiErrorMsg('Silakan isi semua field yang diperlukan.');
-      return;
-    }
-
     try {
-      // Kirim data yang diperbarui ke API
       const response = await CmsHomepagesSectionsMainBannersAPI.update(id, bannerData);
-      console.log('API Response:', response); // Tambahkan log untuk debugging
-      pageUtils.setAlertMsg('Banner telah diperbarui dengan sukses.');
-      history.push('/app/super_admin/mainbannerlistpage');
+      console.log('API Response:', response);
+      pageUtils.setAlertMsg('Banner updated successfully.');
+      history.push('/app/super_admin/mainbannerlistpage'); // Adjust route if needed
     } catch (error) {
-      console.error('Error saving banner data:', error.response?.data || error);
-      pageUtils.setApiErrorMsg('Gagal menyimpan data banner.');
+      console.error('Error saving banner:', error.response?.data || error);
+      pageUtils.setApiErrorMsg('Failed to save banner data.');
     }
   };
 
-  // Navigasi kembali ke halaman daftar banner
   const handleBackToList = () => {
-    history.push('/app/super_admin/mainbannerlistpage');
+    history.push('/app/super_admin/homepage'); // Adjust route if needed
   };
 
-  // Ganti tab
   const toggle = (tab) => {
     if (activeTab !== tab) {
       setActiveTab(tab);
     }
   };
 
-  // Tampilkan loading saat data sedang diambil
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -96,7 +93,6 @@ const BannerEditPage = ({ pageUtils }) => {
         </NavItem>
       </Nav>
 
-      {/* Tombol kembali ke daftar */}
       <div className="mb-3">
         <Button color="secondary" onClick={handleBackToList}>
           Back to List
@@ -106,18 +102,16 @@ const BannerEditPage = ({ pageUtils }) => {
       <TabContent activeTab={activeTab}>
         <TabPane tabId={TAB.PROFILE}>
           <Row>
-            {/* Bagian Pratinjau (Kiri) */}
             <Col md={6}>
               <Card body>
                 <h5>Preview</h5>
-                <MainBannerPreview data={bannerData} />
+                <MainBannerPreview formData={bannerData} />
               </Card>
             </Col>
 
-            {/* Bagian Form (Kanan) */}
             <Col md={6}>
               <Card body>
-                <h5>Main Form</h5>
+                <h5>Main Banner Form</h5>
                 <MainBannerForm formData={bannerData} onFormChange={handleFormChange} />
                 <Button color="primary" className="mt-3" onClick={handleSaveBanner}>
                   Save Banner
