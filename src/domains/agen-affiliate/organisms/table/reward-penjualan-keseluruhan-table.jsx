@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import DataTable from 'components/organisms/data-table';
-import RewardColumns from './reward-columns';
+import RewardPenjualanKeseluruhanColumns from './reward-penjualan-keseluruhan-columns'; // Ganti dengan nama yang benar
 
 const propTypes = {
   data: PropTypes.array.isRequired,
@@ -11,11 +11,6 @@ const propTypes = {
     totalCount: PropTypes.number,
   }),
   onFetchData: PropTypes.func.isRequired,
-  rowButtonProps: PropTypes.shape({
-    buttonText: PropTypes.string,
-    buttonColour: PropTypes.string,
-    onButtonClick: PropTypes.func,
-  }),
   hiddenColumns: PropTypes.arrayOf(PropTypes.string),
   isLoading: PropTypes.bool,
 };
@@ -27,34 +22,27 @@ const defaultProps = {
     pageSize: 10,
     totalCount: 0,
   },
-  rowButtonProps: {
-    buttonText: 'Detail',
-    buttonColour: 'primary',
-    onButtonClick: () => {},
-  },
   hiddenColumns: [],
   isLoading: false,
 };
 
 /**
- * Reward Table Component
+ * Reward Penjualan Keseluruhan Table Component
  */
-const RewardTable = ({
+const RewardPenjualanKeseluruhanTable = ({
   data = [],
   pagination = defaultProps.pagination,
   onFetchData,
-  rowButtonProps = defaultProps.rowButtonProps,
   hiddenColumns = [],
   isLoading = false,
 }) => {
-  const { buttonText, buttonColour, onButtonClick } = rowButtonProps;
-
+  // Tidak ada rowButtonProps karena kita tidak perlu aksi
   const columns = useMemo(
-    () => RewardColumns({ buttonText, buttonColour, onButtonClick }),
-    [buttonText, buttonColour, onButtonClick]
+    () => RewardPenjualanKeseluruhanColumns(),
+    []
   );
 
-  console.debug("RewardTable received data:", data);
+  console.debug("RewardPenjualanKeseluruhanTable received data:", data);
   console.debug("Pagination Info:", pagination);
 
   return (
@@ -71,7 +59,7 @@ const RewardTable = ({
   );
 };
 
-RewardTable.propTypes = propTypes;
-RewardTable.defaultProps = defaultProps;
+RewardPenjualanKeseluruhanTable.propTypes = propTypes;
+RewardPenjualanKeseluruhanTable.defaultProps = defaultProps;
 
-export default RewardTable;
+export default RewardPenjualanKeseluruhanTable;

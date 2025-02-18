@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom"; // Jika menggunakan react-router-dom v5
+// import { useNavigate } from 'react-router-dom'; // Gunakan ini jika menggunakan v6
 import { Row, Col, Card, Button, Form, FormGroup, Label, Input } from "reactstrap";
 import PropTypes from "prop-types";
 import TitlePage from "components/atoms/title-page";
 
 const KomisiDetailPage = ({ pageUtils }) => {
   const [customerData, setCustomerData] = useState(null);
-  const history = useHistory();
+  const history = useHistory(); // Gunakan useHistory jika menggunakan v5
+  // const navigate = useNavigate(); // Gunakan ini jika menggunakan v6
 
   const dummyData = {
     id: 1,
@@ -25,10 +27,11 @@ const KomisiDetailPage = ({ pageUtils }) => {
     setTimeout(() => {
       setCustomerData(dummyData);
     }, 500);
-  }, []);
+  }, [dummyData]); // Tambahkan dummyData di dependency array
 
   const handleBackToList = () => {
-    history.push("/app/super_admin/survey_calon_customer");
+    history.push("/app/super_admin/survey_calon_customer"); 
+ 
   };
 
   const handleFormChange = (field, value) => {
@@ -36,7 +39,7 @@ const KomisiDetailPage = ({ pageUtils }) => {
   };
 
   const handleNavigateToTransactionHistory = () => {
-    history.push("/app/super_admin/transaction_history/${id}");
+    history.push(`/app/super_admin/transaction_history/${customerData.id}`); 
   };
 
   if (!customerData) {
@@ -120,19 +123,18 @@ const KomisiDetailPage = ({ pageUtils }) => {
                   </FormGroup>
                 </Col>
                 <Col md={6}>
-                <FormGroup check className="d-flex align-items-center">
-                  <Input
-                    type="checkbox"
-                    id="dp_30_paid"
-                    checked={customerData.dp_30_paid}
-                    onChange={(e) => handleFormChange("dp_30_paid", e.target.checked)}
-                  />
-                  <Label for="dp_30_paid" className="ml-2 mb-0">
-                    DP 30% Dibayar
-                  </Label>
-                </FormGroup>
-              </Col>
-
+                  <FormGroup check className="d-flex align-items-center">
+                    <Input
+                      type="checkbox"
+                      id="dp_30_paid"
+                      checked={customerData.dp_30_paid}
+                      onChange={(e) => handleFormChange("dp_30_paid", e.target.checked)}
+                    />
+                    <Label for="dp_30_paid" className="ml-2 mb-0">
+                      DP 30% Dibayar
+                    </Label>
+                  </FormGroup>
+                </Col>
               </Row>
               <Row>
                 <Col md={6}>

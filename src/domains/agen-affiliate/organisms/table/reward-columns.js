@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
+import { useHistory } from 'react-router-dom'; // Jika menggunakan react-router-dom untuk navigasi
 import { RowButton } from 'components/atoms';
 
 const propTypes = {
@@ -17,16 +18,48 @@ const actionCellPropTypes = {
 };
 
 /**
- * Columns definition for Komisi Table
+ * Columns definition for Reward Table
  */
-const KomisiColumns = ({ buttonText, buttonColour, onButtonClick }) => {
+const RewardColumns = ({ buttonText, buttonColour, onButtonClick }) => {
+  const history = useHistory();
+
+  // Mendefinisikan handleSelectRow
+  const handleSelectRow = useCallback(
+    (datum, action) => {
+      const { id } = datum;
+      if (action === 'detailPencapaian') {
+        // Arahkan ke halaman Detail Pencapaian Reward
+        history.push({
+          pathname: `/app/super_admin/detail-pencapaian-reward/${id}`,
+          state: { id },
+        });
+      } else if (action === 'detail') {
+        // Arahkan ke halaman Detail Reward
+        history.push({
+          pathname: `/app/super_admin/detail-reward-page/${id}`,
+          state: { id },
+        });
+      }
+    },
+    [history]
+  );
+
+  // Komponen untuk cell aksi
   const ActionCell = ({ cell: { row } }) => (
-    <RowButton
-      data={row.original}
-      color={buttonColour}
-      onClick={() => onButtonClick(row.original)}
-      text={buttonText}
-    />
+    <>
+      <RowButton
+        data={row.original}
+        color={buttonColour}
+        onClick={() => handleSelectRow(row.original, 'detailPencapaian')} // Arahkan ke Detail Pencapaian
+        text="Detail Pencapaian"
+      />
+      <RowButton
+        data={row.original}
+        color={buttonColour}
+        onClick={() => handleSelectRow(row.original, 'detail')} // Arahkan ke Detail Reward
+        text="Detail"
+      />
+    </>
   );
 
   ActionCell.propTypes = actionCellPropTypes;
@@ -37,12 +70,16 @@ const KomisiColumns = ({ buttonText, buttonColour, onButtonClick }) => {
       accessor: 'id',
     },
     {
-      Header: 'Nama Agent',
+      Header: 'Nama Agen',
       accessor: 'agent_affiliate_id',
     },
     {
-      Header: 'Jumlah Komisi',
-      accessor: 'commission_amount',
+      Header: 'Reward Bulanan',
+      accessor: 'monthly_reward',
+    },
+    {
+      Header: 'Reward Top Sales',
+      accessor: 'top_sales_reward',
     },
     {
       Header: 'Tanggal Pencairan',
@@ -51,7 +88,7 @@ const KomisiColumns = ({ buttonText, buttonColour, onButtonClick }) => {
     {
       Header: 'Status',
       accessor: 'status',
-      Cell: ({ cell }) => (cell.value === 'berhasil' ? 'Berhasil' : 'Proses'),
+      Cell: ({ cell }) => (cell.value === 'berhasil' ? 'Berhasil' : 'Unproses'),
     },
     {
       Header: 'Aksi',
@@ -61,6 +98,6 @@ const KomisiColumns = ({ buttonText, buttonColour, onButtonClick }) => {
   ];
 };
 
-KomisiColumns.propTypes = propTypes;
+RewardColumns.propTypes = propTypes;
 
-export default KomisiColumns;
+export default RewardColumns;

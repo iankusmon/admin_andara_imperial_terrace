@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import DataTable from 'components/organisms/data-table';
-import RewardColumns from './reward-columns';
+import RewardAgenBulananColumns from './reward-agen-bulanan-columns'; // Sesuaikan dengan nama file kolom yang baru
 
 const propTypes = {
   data: PropTypes.array.isRequired,
@@ -18,10 +18,11 @@ const propTypes = {
   }),
   hiddenColumns: PropTypes.arrayOf(PropTypes.string),
   isLoading: PropTypes.bool,
+  rankFilter: PropTypes.string, // New prop for Rank filter
 };
 
 const defaultProps = {
-  data: [], // Default data kosong agar tidak error
+  data: [],
   pagination: {
     pageIndex: 0,
     pageSize: 10,
@@ -34,32 +35,41 @@ const defaultProps = {
   },
   hiddenColumns: [],
   isLoading: false,
+  rankFilter: '', // Default to no filter for Rank
 };
 
 /**
- * Reward Table Component
+ * Reward Agen Bulanan Table Component
  */
-const RewardTable = ({
+const RewardAgentBulananTable = ({
   data = [],
   pagination = defaultProps.pagination,
   onFetchData,
   rowButtonProps = defaultProps.rowButtonProps,
   hiddenColumns = [],
   isLoading = false,
+  rankFilter = defaultProps.rankFilter, // Extract rank filter from props
 }) => {
   const { buttonText, buttonColour, onButtonClick } = rowButtonProps;
 
+  // Filter data based on rank
+  const filteredData = useMemo(() => {
+    if (!rankFilter) return data;
+    return data.filter(item => item.rank === rankFilter); // Filter based on rank
+  }, [data, rankFilter]);
+
   const columns = useMemo(
-    () => RewardColumns({ buttonText, buttonColour, onButtonClick }),
+    () => RewardAgenBulananColumns({ buttonText, buttonColour, onButtonClick }),
     [buttonText, buttonColour, onButtonClick]
   );
 
-  console.debug("RewardTable received data:", data);
+  console.debug("RewardAgentBulananTable received data:", data);
   console.debug("Pagination Info:", pagination);
+  console.debug("Applied Rank Filter:", rankFilter);
 
   return (
     <DataTable
-      data={data}
+      data={filteredData} // Use filtered data
       columns={columns}
       pagination={pagination}
       onFetchData={(newPageIndex, newPageSize) =>
@@ -71,7 +81,7 @@ const RewardTable = ({
   );
 };
 
-RewardTable.propTypes = propTypes;
-RewardTable.defaultProps = defaultProps;
+RewardAgentBulananTable.propTypes = propTypes;
+RewardAgentBulananTable.defaultProps = defaultProps;
 
-export default RewardTable;
+export default RewardAgentBulananTable;

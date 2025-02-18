@@ -22,8 +22,8 @@ import { BannerEditPage, BannerEditPageMobile } from 'domains/landingpage/homepa
 import LandmarkBannerEditPage from 'domains/landingpage/homepage/landmark-banner-section/pages/landmark-banner-page/landmark-banner_edit_page'
 import LandownerListPage from 'domains/land-owner/pages/list-page'
 import LandownerDetailPage from 'domains/land-owner/pages/land-owner-detail-page/land_owner_detail_page'
-import  {SurveyCalonCustomerPage , KomisiPage} from 'domains/agen-affiliate/pages/list-page/index' 
-import {SurveyCalonCustomerDetailPage,RiwayatTransaksiSurveyCalonCustomerDetailPage,KomisiDetailPage,UploadBuktiTransferKomisiDetailPage} from 'domains/agen-affiliate/pages/agen-affiliate-detail-page/index'
+import  {SurveyCalonCustomerPage , KomisiPage, RewardPage, RiwayatWithdraw,DashboardAgentAffiliate} from 'domains/agen-affiliate/pages/list-page/index' 
+import {SurveyCalonCustomerDetailPage,RiwayatTransaksiSurveyCalonCustomerDetailPage,KomisiDetailPage,UploadBuktiTransferKomisiDetailPage , DetailRewardPage,UploadBuktiTransferRewardDetailPage,DetailPencapaianReward} from 'domains/agen-affiliate/pages/agen-affiliate-detail-page/index'
 
 
 const super_admin_routes = {
@@ -167,6 +167,14 @@ const super_admin_routes = {
       invisible : true
     },
     {
+      path      : '/super_admin/dashboard-affiliate-page',
+      name      : 'Dashboard Affiliate Page',
+      miniName  : 'AA',
+      component : DashboardAgentAffiliate,
+      layout    : '/app',
+      // invisible : true
+    },
+    {
       path      : '/super_admin/survey_calon_customer',
       name      : 'Survey Calon Customer Page',
       miniName  : 'AA',
@@ -204,7 +212,7 @@ const super_admin_routes = {
       miniName  : 'AA',
       component :  KomisiDetailPage,
       layout    : '/app',
-      // invisible : true
+      invisible : true
     },
     {
       path      : '/super_admin/transaction_history/:id',
@@ -212,9 +220,47 @@ const super_admin_routes = {
       miniName  : 'AA',
       component :  UploadBuktiTransferKomisiDetailPage,
       layout    : '/app',
+      invisible : true
+    },
+    {
+      path      : '/super_admin/reward',
+      name      : 'Reward',
+      miniName  : 'R',
+      component :  RewardPage,
+      layout    : '/app',
+    },
+    {
+      path      : '/super_admin/detail-reward-page/:id',
+      name      : 'detail reward page',
+      miniName  : 'DRP',
+      component :  DetailRewardPage,
+      layout    : '/app',
       // invisible : true
     },
-   
+    {
+      path      : '/super_admin/upload-bukti-transfer-reward-detail-page/:id',
+      name      : 'detail reward page',
+      miniName  : 'DRP',
+      component :  UploadBuktiTransferRewardDetailPage,
+      layout    : '/app',
+      invisible : true
+    },
+    {
+      path      : '/super_admin/detail-pencapaian-reward/:id',
+      name      : 'detail pencapaian reward ',
+      miniName  : 'DRP',
+      component :  DetailPencapaianReward,
+      layout    : '/app',
+      invisible : true
+    },
+    {
+      path      : '/super_admin/riwayat-withdraw',
+      name      : 'riwayat withdraw ',
+      miniName  : 'RW',
+      component : RiwayatWithdraw,
+      layout    : '/app',
+      // invisible : true
+    },
     {
       path      : '/super_admin/landingpagelist',
       name      : 'Landing Page List',
