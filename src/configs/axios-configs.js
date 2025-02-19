@@ -9,7 +9,7 @@ axios.defaults.xsrfHeaderName  = 'X-CSRF-Token'
 axios.defaults.withCredentials = true
 
 // API Base URL
-axios.defaults.baseURL = 'https://api.andaraimperialterrace.co.id'
+axios.defaults.baseURL = 'http://localhost:3000'
 
 // axios.interceptors.request.use((request) => {
 //   console.log('Starting Request', request)

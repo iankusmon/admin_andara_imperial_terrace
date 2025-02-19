@@ -1,57 +1,82 @@
-import React, { useState, useCallback } from 'react';
-import { useHistory } from 'react-router';
-import { Card, Row, Col } from 'reactstrap';
-import TitlePage from 'components/atoms/title-page';
-import { KomisiTable } from 'domains/agen-affiliate/organisms/table/index';
-import PropTypes from 'prop-types';
-
-const propTypes = {
-  pageUtils: PropTypes.shape({
-    setAlertMsg: PropTypes.func,
-    setApiErrorMsg: PropTypes.func,
-  }),
-};
+import React, { useState, useEffect, useCallback } from "react";
+import { useHistory } from "react-router-dom";
+import { Card, Row, Col } from "reactstrap";
+import TitlePage from "components/atoms/title-page";
+import { KomisiTable } from "domains/agen-affiliate/organisms/table/index";
+import PropTypes from "prop-types";
+import AgentAffiliateApi from "../../../../api/v2/admins/agent-affiliate-rewards-api-v2";
 
 const KomisiPage = ({ pageUtils }) => {
+  const [agent, setAgent] = useState(null);
   const [commissions, setCommissions] = useState([]);
-  const [pagination, setPagination] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const history = useHistory();
+  const agentId = 1;
 
-  // Simulasi Fetch Data dari Server
-  const handleFetchCommissions = (tableState) => {
-    setIsLoading(true);
+  // ✅ Gunakan useCallback untuk mencegah re-render tidak perlu
+  const fetchAgentAndCommissions = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      console.log("Fetching data..."); // Debugging
 
-    const dummyData = [
-      { id: 1, agent_affiliate_id: 'Agent 001', commission_amount: 100000, paid_at: '2024-02-01', status: 'proses' },
-      { id: 2, agent_affiliate_id: 'Agent 002', commission_amount: 150000, paid_at: '2024-02-02', status: 'berhasil' },
-      { id: 3, agent_affiliate_id: 'Agent 003', commission_amount: 200000, paid_at: '2024-02-03', status: 'proses' },
-      { id: 4, agent_affiliate_id: 'Agent 004', commission_amount: 250000, paid_at: '2024-02-04', status: 'berhasil' },
-      { id: 5, agent_affiliate_id: 'Agent 005', commission_amount: 300000, paid_at: '2024-02-05', status: 'proses' },
-    ];
+      const response = await AgentAffiliateApi.show(agentId);
+      const agentData = response.data;
 
-    setTimeout(() => {
-      console.log("Fetched commissions:", dummyData);
-      setCommissions(dummyData.slice(0, tableState.pageSize || 10));
-      setPagination({
-        pageIndex: tableState.pageIndex || 1,
-        pageSize: tableState.pageSize || 10,
-        totalCount: dummyData.length,
-      });
+      console.log("API Response:", agentData); // Debugging
+
+      setAgent(agentData);
+
+      const mappedCommissions = (agentData.agent_affiliate_commissions || []).map((commission) => ({
+        id: commission.id || null, // Pastikan id tidak undefined/null
+        name: agentData.name || "Unknown Agent",
+        agent_affiliate_commissions: [
+          {
+            commission_amount: commission.commission_amount || 0,
+            paid_at: commission.paid_at || "N/A",
+          },
+        ],
+        agent_affiliate_rewards: [
+          {
+            reward_amount: commission.reward_amount || 0,
+            paid_at: commission.reward_paid_at || "N/A",
+          },
+        ],
+        agent_affiliate_revenues: [
+          {
+            net_revenue: commission.net_revenue || 0,
+          },
+        ],
+        status: commission.status || "Unknown",
+      }));
+
+      console.log("Mapped Commissions:", mappedCommissions); // Debugging
+
+      setCommissions(mappedCommissions);
+    } catch (error) {
+      console.error("Error fetching data:", error); // Debugging
+      pageUtils?.setApiErrorMsg?.("Error fetching agent and commissions.");
+    } finally {
       setIsLoading(false);
-    }, 500);
-  };
+    }
+  }, [agentId, pageUtils]);
 
-  const handleSelectRow = useCallback(
-    (datum) => {
-      const { id } = datum;
-      history.push({
-        pathname: `/app/super_admin/komisidetailpage/${id}`,
-        state: { id },
-      });
-    },
-    [history]
-  );
+  // ✅ Panggil fetch data saat pertama kali halaman di-load
+  useEffect(() => {
+    fetchAgentAndCommissions();
+  }, [fetchAgentAndCommissions]);
+
+  // ✅ Fungsi navigasi dengan validasi
+  const handleNavigate = (datum) => {
+    console.log("Button clicked, datum:", datum); // Debugging
+    if (!datum.id) {
+      console.error("Error: datum.id is undefined or null");
+      return;
+    }
+    
+    const targetRoute = `/app/super_admin/komisidetailpage/${datum.id}`; // ✅ Sesuaikan dengan layout
+    console.log("Navigating to:", targetRoute);
+    history.push(targetRoute);
+  };
 
   return (
     <>
@@ -63,13 +88,12 @@ const KomisiPage = ({ pageUtils }) => {
             <h5 className="p-3">Daftar Komisi</h5>
             <KomisiTable
               data={commissions}
-              pagination={pagination}
-              onFetchData={handleFetchCommissions}
               isLoading={isLoading}
+              onFetchData={fetchAgentAndCommissions}
               rowButtonProps={{
-                buttonText: 'Detail',
-                buttonColour: 'primary',
-                onButtonClick: handleSelectRow,
+                buttonText: "Detail",
+                buttonColour: "primary",
+                onButtonClick: handleNavigate, // ✅ Gunakan fungsi yang sudah diperbaiki
               }}
             />
           </Card>
@@ -79,6 +103,11 @@ const KomisiPage = ({ pageUtils }) => {
   );
 };
 
-KomisiPage.propTypes = propTypes;
+KomisiPage.propTypes = {
+  pageUtils: PropTypes.shape({
+    setAlertMsg: PropTypes.func,
+    setApiErrorMsg: PropTypes.func,
+  }),
+};
 
 export default KomisiPage;

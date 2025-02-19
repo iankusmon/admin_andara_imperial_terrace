@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
-import DataTable from 'components/organisms/data-table';
-import KomisiColumns from './komisi-columns';
+import React, { useMemo } from "react";
+import PropTypes from "prop-types";
+import DataTable from "components/organisms/data-table";
+import KomisiColumns from "./komisi-columns";
 
 const propTypes = {
   data: PropTypes.array.isRequired,
@@ -21,24 +21,21 @@ const propTypes = {
 };
 
 const defaultProps = {
-  data: [], // Default data kosong agar tidak error
+  data: [],
   pagination: {
     pageIndex: 0,
     pageSize: 10,
     totalCount: 0,
   },
   rowButtonProps: {
-    buttonText: 'Detail',
-    buttonColour: 'primary',
-    onButtonClick: () => {},
+    buttonText: "Detail",
+    buttonColour: "primary",
+    onButtonClick: () => {}, // Default function
   },
   hiddenColumns: [],
   isLoading: false,
 };
 
-/**
- * Komisi Table Component
- */
 const KomisiTable = ({
   data = [],
   pagination = defaultProps.pagination,
@@ -53,9 +50,6 @@ const KomisiTable = ({
     () => KomisiColumns({ buttonText, buttonColour, onButtonClick }),
     [buttonText, buttonColour, onButtonClick]
   );
-
-  console.debug("KomisiTable received data:", data);
-  console.debug("Pagination Info:", pagination);
 
   return (
     <DataTable

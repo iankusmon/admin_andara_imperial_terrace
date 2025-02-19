@@ -1,48 +1,63 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom"; // Jika menggunakan react-router-dom v5
-// import { useNavigate } from 'react-router-dom'; // Gunakan ini jika menggunakan v6
+import { useParams, useHistory } from "react-router-dom";
 import { Row, Col, Card, Button, Form, FormGroup, Label, Input } from "reactstrap";
 import PropTypes from "prop-types";
 import TitlePage from "components/atoms/title-page";
+import AgentAffiliateApi from "../../../../api/v2/admins/agent-affiliate-rewards-api-v2";
 
 const KomisiDetailPage = ({ pageUtils }) => {
-  const [customerData, setCustomerData] = useState(null);
-  const history = useHistory(); // Gunakan useHistory jika menggunakan v5
-  // const navigate = useNavigate(); // Gunakan ini jika menggunakan v6
-
-  const dummyData = {
-    id: 1,
-    agent_affiliate_id: 10,
-    property_unit_id: 101,
-    unit_price: 3000000000.0,
-    commission_percentage: 5.0,
-    commission_amount: 150000000.0,
-    dp_30_paid: true,
-    paid_at: "2025-01-10T10:00:00Z",
-    created_at: "2025-01-01T08:00:00Z",
-    updated_at: "2025-01-05T12:00:00Z"
-  };
+  const { id } = useParams();
+  const [commissionData, setCommissionData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedStatus, setSelectedStatus] = useState(""); // Untuk menyimpan status yang dipilih
+  const history = useHistory();
 
   useEffect(() => {
-    setTimeout(() => {
-      setCustomerData(dummyData);
-    }, 500);
-  }, [dummyData]); // Tambahkan dummyData di dependency array
+    const fetchCommissionDetail = async () => {
+      try {
+        setIsLoading(true);
+        const response = await AgentAffiliateApi.show(id);
+        console.log("Commission Data:", response.data); // Debugging log
+        setCommissionData(response.data);
+
+        // Jika ada status, set ke state
+        const commission = response.data.agent_affiliate_commissions?.[0];
+        setSelectedStatus(commission?.status || "Pending"); // Default "Pending" jika status tidak ada
+      } catch (error) {
+        console.error("Error fetching commission details:", error);
+        pageUtils?.setApiErrorMsg?.("Error fetching commission details.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCommissionDetail();
+  }, [id, pageUtils]);
 
   const handleBackToList = () => {
-    history.push("/app/super_admin/survey_calon_customer"); 
- 
-  };
-
-  const handleFormChange = (field, value) => {
-    setCustomerData((prevData) => ({ ...prevData, [field]: value }));
+    history.push("/app/super_admin/komisi");
   };
 
   const handleNavigateToTransactionHistory = () => {
-    history.push(`/app/super_admin/transaction_history/${customerData.id}`); 
+    history.push(`/app/super_admin/transaction_history/${id}`);
   };
 
-  if (!customerData) {
+  const handleStatusChange = (event) => {
+    setSelectedStatus(event.target.value);
+  };
+
+  const handleSave = async () => {
+    try {
+      // Kirim perubahan status ke API
+      await AgentAffiliateApi.updateStatus(id, { status: selectedStatus });
+      pageUtils?.setAlertMsg?.("Status berhasil diperbarui.");
+    } catch (error) {
+      console.error("Gagal memperbarui status:", error);
+      pageUtils?.setApiErrorMsg?.("Gagal memperbarui status.");
+    }
+  };
+
+  if (isLoading) {
     return (
       <div>
         <TitlePage mainTitle="Komisi" subTitle="Detail" />
@@ -50,6 +65,18 @@ const KomisiDetailPage = ({ pageUtils }) => {
       </div>
     );
   }
+
+  if (!commissionData) {
+    return (
+      <div>
+        <TitlePage mainTitle="Komisi" subTitle="Detail" />
+        <p>Data tidak ditemukan.</p>
+      </div>
+    );
+  }
+
+  const agentName = commissionData.name || "-";
+  const commission = commissionData.agent_affiliate_commissions?.[0] || {};
 
   return (
     <>
@@ -62,97 +89,72 @@ const KomisiDetailPage = ({ pageUtils }) => {
       <Row>
         <Col md={12}>
           <Card body>
-            <h5>Edit Detail Komisi</h5>
+            <h5>Detail Komisi</h5>
             <Form>
               <Row>
                 <Col md={6}>
                   <FormGroup>
-                    <Label for="agent_affiliate_id">ID Agen Affiliate</Label>
-                    <Input
-                      id="agent_affiliate_id"
-                      value={customerData.agent_affiliate_id}
-                      onChange={(e) => handleFormChange("agent_affiliate_id", e.target.value)}
-                    />
+                    <Label>ID Agen Affiliate</Label>
+                    <Input type="text" value={commission.agent_affiliate_id || "-"} disabled />
                   </FormGroup>
                 </Col>
                 <Col md={6}>
                   <FormGroup>
-                    <Label for="property_unit_id">ID Unit Properti</Label>
-                    <Input
-                      id="property_unit_id"
-                      value={customerData.property_unit_id}
-                      onChange={(e) => handleFormChange("property_unit_id", e.target.value)}
-                    />
+                    <Label>Nama Agen</Label>
+                    <Input type="text" value={agentName} disabled />
                   </FormGroup>
                 </Col>
               </Row>
               <Row>
                 <Col md={6}>
                   <FormGroup>
-                    <Label for="unit_price">Harga Unit</Label>
-                    <Input
-                      type="number"
-                      id="unit_price"
-                      value={customerData.unit_price}
-                      onChange={(e) => handleFormChange("unit_price", e.target.value)}
-                    />
+                    <Label>ID Unit Properti</Label>
+                    <Input type="text" value={commission.property_unit_id || "-"} disabled />
                   </FormGroup>
                 </Col>
                 <Col md={6}>
                   <FormGroup>
-                    <Label for="commission_percentage">Persentase Komisi</Label>
-                    <Input
-                      type="number"
-                      id="commission_percentage"
-                      value={customerData.commission_percentage}
-                      onChange={(e) => handleFormChange("commission_percentage", e.target.value)}
-                    />
+                    <Label>Harga Unit</Label>
+                    <Input type="text" value={commission.unit_price ? commission.unit_price.toLocaleString() : "0"} disabled />
                   </FormGroup>
                 </Col>
               </Row>
               <Row>
                 <Col md={6}>
                   <FormGroup>
-                    <Label for="commission_amount">Jumlah Komisi</Label>
-                    <Input
-                      type="number"
-                      id="commission_amount"
-                      value={customerData.commission_amount}
-                      onChange={(e) => handleFormChange("commission_amount", e.target.value)}
-                    />
+                    <Label>Persentase Komisi</Label>
+                    <Input type="text" value={`${commission.commission_percentage || 0}%`} disabled />
                   </FormGroup>
                 </Col>
                 <Col md={6}>
-                  <FormGroup check className="d-flex align-items-center">
-                    <Input
-                      type="checkbox"
-                      id="dp_30_paid"
-                      checked={customerData.dp_30_paid}
-                      onChange={(e) => handleFormChange("dp_30_paid", e.target.checked)}
-                    />
-                    <Label for="dp_30_paid" className="ml-2 mb-0">
-                      DP 30% Dibayar
-                    </Label>
+                  <FormGroup>
+                    <Label>Jumlah Komisi</Label>
+                    <Input type="text" value={commission.commission_amount ? commission.commission_amount.toLocaleString() : "0"} disabled />
                   </FormGroup>
                 </Col>
               </Row>
               <Row>
                 <Col md={6}>
                   <FormGroup>
-                    <Label for="paid_at">Tanggal Pembayaran</Label>
-                    <Input
-                      type="datetime-local"
-                      id="paid_at"
-                      value={customerData.paid_at}
-                      onChange={(e) => handleFormChange("paid_at", e.target.value)}
-                    />
+                    <Label>Status</Label>
+                    <Input type="select" value={selectedStatus} onChange={handleStatusChange}>
+                      <option value="Pending">Pending</option>
+                      <option value="Approved">Approved</option>
+                      <option value="Rejected">Rejected</option>
+                    </Input>
+                  </FormGroup>
+                </Col>
+                <Col md={6}>
+                  <FormGroup>
+                    <Label>Tanggal Pembayaran</Label>
+                    <Input type="text" value={commission.paid_at ? new Date(commission.paid_at).toLocaleString() : "Belum Dibayar"} disabled />
                   </FormGroup>
                 </Col>
               </Row>
               <div className="text-right mt-3">
                 <Button onClick={handleNavigateToTransactionHistory}>Riwayat Transaksi</Button>
                 <Button className="ml-2">Cancel</Button>
-                <Button className="ml-2" color="primary">
+                <Button className="ml-2" color="primary" onClick={handleSave}>
                   Save
                 </Button>
               </div>
@@ -162,6 +164,13 @@ const KomisiDetailPage = ({ pageUtils }) => {
       </Row>
     </>
   );
+};
+
+KomisiDetailPage.propTypes = {
+  pageUtils: PropTypes.shape({
+    setAlertMsg: PropTypes.func,
+    setApiErrorMsg: PropTypes.func,
+  }),
 };
 
 export default KomisiDetailPage;
