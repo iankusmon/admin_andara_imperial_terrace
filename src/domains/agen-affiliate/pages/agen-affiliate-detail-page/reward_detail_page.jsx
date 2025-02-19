@@ -1,49 +1,77 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom"; // Using useHistory for v5
+import { useParams, useHistory } from "react-router-dom";
 import { Row, Col, Card, Button, Form, FormGroup, Label, Input } from "reactstrap";
+import PropTypes from "prop-types";
 import TitlePage from "components/atoms/title-page";
+import AgentAffiliateApi from "../../../../api/v2/admins/agent-affiliate-rewards-api-v2";
 
-const DetailRewardPage = () => {
+const DetailRewardPage = ({ pageUtils }) => {
+  const { id } = useParams(); // ✅ Ambil id dari URL
   const [rewardData, setRewardData] = useState(null);
-  const history = useHistory(); // useHistory instead of useNavigate
-
-  const dummyData = {
-    agent_name: "Bintang",
-    phone_number: "081234567890",
-    payout_date: "2025-03-01",
-    account_opening_reward: 500000,
-    flash_reward: 1000000,
-    referral_reward: 1000000,
-    total_commission: 52800000,
-    status: "Proses",
-  };
+  const [isLoading, setIsLoading] = useState(true);
+  const history = useHistory();
 
   useEffect(() => {
-    setTimeout(() => {
-      setRewardData(dummyData);
-    }, 500);
-  }, []);
+    const fetchRewardDetail = async () => {
+      try {
+        setIsLoading(true);
+        const response = await AgentAffiliateApi.show(id);
+        console.log("Reward Data:", response.data); // Debugging log
+        setRewardData(response.data);
+      } catch (error) {
+        console.error("Error fetching reward details:", error);
+        pageUtils?.setApiErrorMsg?.("Error fetching reward details.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRewardDetail();
+  }, [id, pageUtils]);
 
   const handleBackToList = () => {
-    history.push("/app/super_admin/reward_list"); // Using history.push for navigation
+    history.push("/app/super_admin/reward_list");
+  };
+
+  const handleNavigateToTransactionHistory = () => {
+    history.push(`/app/super_admin/upload-bukti-transfer-reward-detail-page/${id}`);
   };
 
   const handleFormChange = (field, value) => {
     setRewardData((prevData) => ({ ...prevData, [field]: value }));
   };
 
-  const handleNavigateToTransactionHistory = () => {
-    history.push(`/app/super_admin/upload-bukti-transfer-reward-detail-page/${rewardData.id}`);
+  const handleSave = async () => {
+    try {
+      await AgentAffiliateApi.update(id, rewardData);
+      pageUtils?.setAlertMsg?.("Detail reward berhasil diperbarui.");
+    } catch (error) {
+      console.error("Gagal memperbarui detail reward:", error);
+      pageUtils?.setApiErrorMsg?.("Gagal memperbarui detail reward.");
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div>
+        <TitlePage mainTitle="Reward" subTitle="Detail" />
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   if (!rewardData) {
     return (
       <div>
         <TitlePage mainTitle="Reward" subTitle="Detail" />
-        <p>Memuat...</p>
+        <p>Data tidak ditemukan.</p>
       </div>
     );
   }
+
+  // 🟢 Ambil Nama Agen & Nomor Telepon dengan fallback jika tidak tersedia
+  const agentName = rewardData.agent_name || rewardData.name || "-";
+  const agentPhone = rewardData.phone_number || rewardData.mobile || "-";
 
   return (
     <>
@@ -56,25 +84,19 @@ const DetailRewardPage = () => {
       <Row>
         <Col md={12}>
           <Card body>
-            <h5>Edit Detail Reward</h5>
+            <h5>Detail Reward</h5>
             <Form>
               <Row>
                 <Col md={6}>
                   <FormGroup>
                     <Label>Nama Agen</Label>
-                    <Input
-                      value={rewardData.agent_name}
-                      onChange={(e) => handleFormChange("agent_name", e.target.value)}
-                    />
+                    <Input type="text" value={agentName} disabled />
                   </FormGroup>
                 </Col>
                 <Col md={6}>
                   <FormGroup>
                     <Label>Nomor Telepon</Label>
-                    <Input
-                      value={rewardData.phone_number}
-                      onChange={(e) => handleFormChange("phone_number", e.target.value)}
-                    />
+                    <Input type="text" value={agentPhone} disabled />
                   </FormGroup>
                 </Col>
               </Row>
@@ -84,7 +106,7 @@ const DetailRewardPage = () => {
                     <Label>Tanggal Pencairan</Label>
                     <Input
                       type="date"
-                      value={rewardData.payout_date}
+                      value={rewardData.payout_date || ""}
                       onChange={(e) => handleFormChange("payout_date", e.target.value)}
                     />
                   </FormGroup>
@@ -92,10 +114,7 @@ const DetailRewardPage = () => {
                 <Col md={6}>
                   <FormGroup>
                     <Label>Reward Buka Akun</Label>
-                    <Input
-                      value={rewardData.account_opening_reward.toLocaleString()}
-                      onChange={(e) => handleFormChange("account_opening_reward", e.target.value)}
-                    />
+                    <Input type="text" value={rewardData.account_opening_reward?.toLocaleString() || "0"} disabled />
                   </FormGroup>
                 </Col>
               </Row>
@@ -103,19 +122,13 @@ const DetailRewardPage = () => {
                 <Col md={6}>
                   <FormGroup>
                     <Label>Flash Reward</Label>
-                    <Input
-                      value={rewardData.flash_reward.toLocaleString()}
-                      onChange={(e) => handleFormChange("flash_reward", e.target.value)}
-                    />
+                    <Input type="text" value={rewardData.flash_reward?.toLocaleString() || "0"} disabled />
                   </FormGroup>
                 </Col>
                 <Col md={6}>
                   <FormGroup>
                     <Label>Reward Referral</Label>
-                    <Input
-                      value={rewardData.referral_reward.toLocaleString()}
-                      onChange={(e) => handleFormChange("referral_reward", e.target.value)}
-                    />
+                    <Input type="text" value={rewardData.referral_reward?.toLocaleString() || "0"} disabled />
                   </FormGroup>
                 </Col>
               </Row>
@@ -123,19 +136,21 @@ const DetailRewardPage = () => {
                 <Col md={6}>
                   <FormGroup>
                     <Label>Jumlah Komisi</Label>
-                    <Input
-                      value={rewardData.total_commission.toLocaleString()}
-                      onChange={(e) => handleFormChange("total_commission", e.target.value)}
-                    />
+                    <Input type="text" value={rewardData.total_commission?.toLocaleString() || "0"} disabled />
                   </FormGroup>
                 </Col>
                 <Col md={6}>
                   <FormGroup>
                     <Label>Status</Label>
                     <Input
-                      value={rewardData.status}
+                      type="select"
+                      value={rewardData.status || "Pending"}
                       onChange={(e) => handleFormChange("status", e.target.value)}
-                    />
+                    >
+                      <option value="Pending">Pending</option>
+                      <option value="Approved">Approved</option>
+                      <option value="Rejected">Rejected</option>
+                    </Input>
                   </FormGroup>
                 </Col>
               </Row>
@@ -146,12 +161,19 @@ const DetailRewardPage = () => {
       <div className="text-right mt-3">
         <Button onClick={handleNavigateToTransactionHistory}>Riwayat Transaksi</Button>
         <Button className="ml-2">Cancel</Button>
-        <Button className="ml-2" color="primary">
+        <Button className="ml-2" color="primary" onClick={handleSave}>
           Save
         </Button>
       </div>
     </>
   );
+};
+
+DetailRewardPage.propTypes = {
+  pageUtils: PropTypes.shape({
+    setAlertMsg: PropTypes.func,
+    setApiErrorMsg: PropTypes.func,
+  }),
 };
 
 export default DetailRewardPage;

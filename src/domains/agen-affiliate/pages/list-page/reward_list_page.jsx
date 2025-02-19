@@ -1,67 +1,75 @@
-import React, { useState, useCallback } from 'react';
-import { useHistory } from 'react-router-dom'; // ✅ Gunakan react-router-dom, bukan react-router
-import { Card, Row, Col } from 'reactstrap';
-import TitlePage from 'components/atoms/title-page';
-import { RewardTable } from 'domains/agen-affiliate/organisms/table/index';
-import PropTypes from 'prop-types';
-
-const propTypes = {
-  pageUtils: PropTypes.shape({
-    setAlertMsg: PropTypes.func,
-    setApiErrorMsg: PropTypes.func,
-  }),
-};
+import React, { useState, useEffect, useCallback } from "react";
+import { useHistory } from "react-router-dom";
+import { Card, Row, Col } from "reactstrap";
+import TitlePage from "components/atoms/title-page";
+import { RewardTable } from "domains/agen-affiliate/organisms/table/index";
+import PropTypes from "prop-types";
+import AgentAffiliateApi from "../../../../api/v2/admins/agent-affiliate-rewards-api-v2";
 
 const RewardPage = ({ pageUtils }) => {
+  const [agent, setAgent] = useState(null);
   const [rewards, setRewards] = useState([]);
-  const [pagination, setPagination] = useState({});
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const history = useHistory();
+  const agentId = 1;
 
-  // ✅ Simulasi Fetch Data dari Server
-  const handleFetchRewards = (tableState) => {
-    setIsLoading(true);
+  // ✅ Ambil data dari API menggunakan useCallback
+  const fetchAgentAndRewards = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      console.log("Fetching rewards data..."); // Debugging
 
-    const dummyData = [
-      { id: 1, agent_affiliate_id: 'Agent 001', monthly_reward: 100000, top_sales_reward: 50000, paid_at: '2024-02-01', status: 'berhasil' },
-      { id: 2, agent_affiliate_id: 'Agent 002', monthly_reward: 150000, top_sales_reward: 70000, paid_at: '2024-02-02', status: 'unproses' },
-      { id: 3, agent_affiliate_id: 'Agent 003', monthly_reward: 200000, top_sales_reward: 80000, paid_at: '2024-02-03', status: 'berhasil' },
-      { id: 4, agent_affiliate_id: 'Agent 004', monthly_reward: 250000, top_sales_reward: 90000, paid_at: '2024-02-04', status: 'unproses' },
-      { id: 5, agent_affiliate_id: 'Agent 005', monthly_reward: 300000, top_sales_reward: 100000, paid_at: '2024-02-05', status: 'berhasil' },
-    ];
+      const response = await AgentAffiliateApi.show(agentId);
+      const agentData = response.data;
 
-    setTimeout(() => {
-      console.log("Fetched rewards:", dummyData);
-      setRewards(dummyData.slice(0, tableState.pageSize || 10));
-      setPagination({
-        pageIndex: tableState.pageIndex || 1,
-        pageSize: tableState.pageSize || 10,
-        totalCount: dummyData.length,
-      });
+      console.log("API Response:", agentData); // Debugging
+
+      setAgent(agentData);
+
+      // ✅ Map data agar sesuai dengan struktur tabel
+      const mappedRewards = (agentData.agent_affiliate_rewards || []).map((reward) => ({
+        id: reward.id || null, // Pastikan ID tidak undefined/null
+        agent_affiliate_id: agentData.name || "Unknown Agent",
+        monthly_reward: reward.monthly_reward || 0,
+        top_sales_reward: reward.top_sales_reward || 0,
+        paid_at: reward.paid_at || "N/A",
+        status: reward.status || "Unknown",
+      }));
+
+      console.log("Mapped Rewards:", mappedRewards); // Debugging
+
+      setRewards(mappedRewards);
+    } catch (error) {
+      console.error("Error fetching rewards data:", error); // Debugging
+      pageUtils?.setApiErrorMsg?.("Error fetching agent rewards.");
+    } finally {
       setIsLoading(false);
-    }, 500);
+    }
+  }, [agentId, pageUtils]);
+
+  // ✅ Panggil fetch data saat pertama kali halaman di-load
+  useEffect(() => {
+    fetchAgentAndRewards();
+  }, [fetchAgentAndRewards]);
+
+  // ✅ Fungsi navigasi dengan validasi
+  const handleNavigate = (datum, action) => {
+    console.log("Button clicked, datum:", datum, "Action:", action); // Debugging
+    if (!datum.id) {
+      console.error("Error: datum.id is undefined or null");
+      return;
+    }
+
+    let targetRoute = "";
+    if (action === "detailPencapaian") {
+      targetRoute = `/app/super_admin/detail-pencapaian-reward/${datum.id}`;
+    } else if (action === "detail") {
+      targetRoute = `/app/super_admin/detail-reward-page/${datum.id}`;
+    }
+
+    console.log("Navigating to:", targetRoute);
+    history.push(targetRoute);
   };
-
-  // ✅ Fungsi untuk menangani klik pada baris tabel
-  const handleSelectRow = useCallback(
-    (datum, action) => {
-      console.log("Row clicked:", datum, "Action:", action); // ✅ Debugging
-
-      if (!datum || !datum.id) {
-        console.error("Invalid datum:", datum);
-        return;
-      }
-
-      const { id } = datum;
-
-      if (action === 'detailPencapaian') {
-        history.push(`/app/super_admin/detail-pencapaian-reward/${id}`);
-      } else if (action === 'detail') {
-        history.push(`/app/super_admin/detail-reward-page/${id}`);
-      }
-    },
-    [history]
-  );
 
   return (
     <>
@@ -73,13 +81,12 @@ const RewardPage = ({ pageUtils }) => {
             <h5 className="p-3">Daftar Reward</h5>
             <RewardTable
               data={rewards}
-              pagination={pagination}
-              onFetchData={handleFetchRewards}
               isLoading={isLoading}
+              onFetchData={fetchAgentAndRewards}
               rowButtonProps={{
-                buttonText: 'Detail',
-                buttonColour: 'primary',
-                onButtonClick: handleSelectRow,
+                buttonText: "Detail",
+                buttonColour: "primary",
+                onButtonClick: handleNavigate, // ✅ Gunakan fungsi yang sudah diperbaiki
               }}
             />
           </Card>
@@ -89,6 +96,11 @@ const RewardPage = ({ pageUtils }) => {
   );
 };
 
-RewardPage.propTypes = propTypes;
+RewardPage.propTypes = {
+  pageUtils: PropTypes.shape({
+    setAlertMsg: PropTypes.func,
+    setApiErrorMsg: PropTypes.func,
+  }),
+};
 
 export default RewardPage;

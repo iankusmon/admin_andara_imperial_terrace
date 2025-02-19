@@ -1,12 +1,14 @@
-import React, { useCallback } from 'react';
-import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
-import { RowButton } from 'components/atoms';
+import React, { useCallback } from "react";
+import PropTypes from "prop-types";
+import { useHistory } from "react-router-dom";
+import { RowButton } from "components/atoms";
+import { format } from "date-fns"; // Format tanggal
+import { id } from "date-fns/locale"; // Locale Indonesia
 
 const propTypes = {
-  buttonText: PropTypes.string.isRequired,
+  buttonText: PropTypes.string,
   buttonColour: PropTypes.string.isRequired,
-  onButtonClick: PropTypes.func.isRequired,
+  onButtonClick: PropTypes.func,
 };
 
 const actionCellPropTypes = {
@@ -23,12 +25,12 @@ const RewardColumns = ({ buttonColour }) => {
   const handleSelectRow = useCallback(
     (datum, action) => {
       const { id } = datum;
-      if (action === 'detailPencapaian') {
+      if (action === "detailPencapaian") {
         history.push({
           pathname: `/app/super_admin/detail-pencapaian-reward/${id}`,
           state: { id },
         });
-      } else if (action === 'detail') {
+      } else if (action === "detail") {
         history.push({
           pathname: `/app/super_admin/detail-reward-page/${id}`,
           state: { id },
@@ -43,13 +45,13 @@ const RewardColumns = ({ buttonColour }) => {
       <RowButton
         data={row.original}
         color={buttonColour}
-        onClick={() => handleSelectRow(row.original, 'detailPencapaian')}
+        onClick={() => handleSelectRow(row.original, "detailPencapaian")}
         text="Detail Pencapaian"
       />
       <RowButton
         data={row.original}
         color={buttonColour}
-        onClick={() => handleSelectRow(row.original, 'detail')}
+        onClick={() => handleSelectRow(row.original, "detail")}
         text="Detail"
       />
     </>
@@ -59,33 +61,55 @@ const RewardColumns = ({ buttonColour }) => {
 
   return [
     {
-      Header: 'ID',
-      accessor: 'id',
+      Header: "ID",
+      accessor: "id",
     },
     {
-      Header: 'Nama Agen',
-      accessor: 'agent_affiliate_id',
+      Header: "Nama Agen",
+      accessor: "name",
     },
     {
-      Header: 'Reward Bulanan',
-      accessor: 'monthly_reward',
+      Header: "Jumlah Reward",
+      accessor: "agent_affiliate_rewards",
+      id: "jumlah_reward",
+      Cell: ({ cell }) => {
+        const reward =
+          Array.isArray(cell.value) && cell.value.length > 0
+            ? cell.value[0].reward_amount
+            : 0;
+        return `Rp ${parseFloat(reward).toLocaleString("id-ID")}`;
+      },
     },
     {
-      Header: 'Reward Top Sales',
-      accessor: 'top_sales_reward',
+      Header: "Tanggal Pencairan Reward",
+      accessor: "agent_affiliate_rewards",
+      id: "tanggal_pencairan_reward",
+      Cell: ({ cell }) => {
+        const dateStr =
+          Array.isArray(cell.value) && cell.value.length > 0
+            ? cell.value[0].paid_at
+            : null;
+        if (!dateStr) return "-";
+        return format(new Date(dateStr), "dd MMMM yyyy", { locale: id });
+      },
     },
     {
-      Header: 'Tanggal Pencairan',
-      accessor: 'paid_at',
+      Header: "Status",
+      accessor: "agent_affiliate_rewards",
+      id: "status_reward",
+      Cell: ({ cell }) => {
+        const status =
+          Array.isArray(cell.value) && cell.value.length > 0
+            ? cell.value[0].dp_30_paid
+              ? "Paid"
+              : "Unpaid"
+            : "-";
+        return status;
+      },
     },
     {
-      Header: 'Status',
-      accessor: 'status',
-      Cell: ({ cell }) => (cell.value === 'berhasil' ? 'Berhasil' : 'Unproses'),
-    },
-    {
-      Header: 'Aksi',
-      id: 'action',
+      Header: "Aksi",
+      id: "action",
       Cell: ActionCell,
     },
   ];
