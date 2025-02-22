@@ -235,7 +235,7 @@ const super_admin_routes = {
       miniName  : 'DRP',
       component :  DetailRewardPage,
       layout    : '/app',
-      // invisible : true
+      invisible : true
     },
     {
       path      : '/super_admin/upload-bukti-transfer-reward-detail-page/:id',

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import PropTypes from "prop-types";
 import DataTable from "components/organisms/data-table";
-import RewardColumns from "./reward-columns";
+import KomisiColumns from "./komisi-columns";
 
 const propTypes = {
   data: PropTypes.array.isRequired,
@@ -36,10 +36,7 @@ const defaultProps = {
   isLoading: false,
 };
 
-/**
- * Reward Table Component
- */
-const RewardTable = ({
+const KomisiTable = ({
   data = [],
   pagination = defaultProps.pagination,
   onFetchData,
@@ -50,7 +47,7 @@ const RewardTable = ({
   const { buttonText, buttonColour, onButtonClick } = rowButtonProps;
 
   const columns = useMemo(
-    () => RewardColumns({ buttonText, buttonColour, onButtonClick }),
+    () => KomisiColumns({ buttonText, buttonColour, onButtonClick }),
     [buttonText, buttonColour, onButtonClick]
   );
 
@@ -68,7 +65,7 @@ const RewardTable = ({
   );
 };
 
-RewardTable.propTypes = propTypes;
-RewardTable.defaultProps = defaultProps;
+KomisiTable.propTypes = propTypes;
+KomisiTable.defaultProps = defaultProps;
 
-export default RewardTable;
+export default KomisiTable;

@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
+
 const ColumnsChart = () => {
   const [state, setState] = useState({
     series: [{
@@ -84,20 +85,40 @@ const ColumnsChart = () => {
   // Fungsi untuk menangani perubahan filter (minggu, bulan, tahun)
   const handleFilterChange = (filterType) => {
     setSelectedFilter(filterType);
+  
     if (filterType === "minggu") {
-      // Filter data per minggu (asumsi data per minggu tidak tersedia, jadi kita contohkan dengan 1 data)
-      const weeklyData = data.map(value => value / 4); // Pembagian kasar (misal: setiap bulan dibagi 4 minggu)
+      let dailyData = [];
+      let dailyLabels = [];
+  
+      // Simulasi data harian dari data bulanan
+      months.forEach((month, index) => {
+        let daysInMonth = index === 1 ? 28 : (index % 2 === 0 ? 30 : 31); // Februari 28 hari, lainnya 30/31
+        let dailyInflation = data[index] / daysInMonth; // Distribusi inflasi harian
+  
+        for (let i = 1; i <= daysInMonth; i++) {
+          dailyData.push(dailyInflation);
+          let dayOfWeek = (i % 7) - 1; // Hitung hari dalam seminggu
+          let days = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+          dailyLabels.push(`${days[(dayOfWeek + 7) % 7]} (${month} ${i})`); // Pastikan indeks valid
+        }
+      });
+  
+      // Ambil hanya data untuk minggu pertama (misalnya minggu pertama Januari)
+      let weeklyData = dailyData.slice(0, 7);
+      let weeklyLabels = dailyLabels.slice(0, 7);
+  
       setFilteredData(weeklyData);
-      setFilteredLabels(["Week 1", "Week 2", "Week 3", "Week 4"]);
+      setFilteredLabels(weeklyLabels);
     } else if (filterType === "bulan") {
       setFilteredData(data);
       setFilteredLabels(months);
     } else if (filterType === "tahun") {
-      // Filter berdasarkan tahun (misalnya rata-rata per tahun, jika ada data tahunan)
       setFilteredData([data.reduce((acc, curr) => acc + curr, 0) / 12]); // Rata-rata tahunan
-      setFilteredLabels(["2022"]); // Nama tahun
+      setFilteredLabels(["2022"]);
     }
   };
+  
+  
 
   // Menyiapkan data untuk chart
   const chartData = {
@@ -111,6 +132,11 @@ const ColumnsChart = () => {
     }]
   };
 
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
+
+
   return (
     <Container className="mt-5">
       <Row>
@@ -118,7 +144,7 @@ const ColumnsChart = () => {
           <Card className="shadow">
             <CardHeader>
               <h3 className="mb-0">Monthly Inflation in Argentina, 2002</h3>
-              <Dropdown isOpen={false} toggle={() => {}}>
+              <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
                 <DropdownToggle caret>
                   Filter by: {selectedFilter.charAt(0).toUpperCase() + selectedFilter.slice(1)}
                 </DropdownToggle>
@@ -128,6 +154,7 @@ const ColumnsChart = () => {
                   <DropdownItem onClick={() => handleFilterChange("tahun")}>Tahun</DropdownItem>
                 </DropdownMenu>
               </Dropdown>
+
             </CardHeader>
             <CardBody>
               <Bar data={chartData} options={state.options} />

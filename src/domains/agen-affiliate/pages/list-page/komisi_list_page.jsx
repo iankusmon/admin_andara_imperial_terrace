@@ -13,7 +13,6 @@ const KomisiPage = ({ pageUtils }) => {
   const history = useHistory();
   const agentId = 1;
 
-  // ✅ Gunakan useCallback untuk mencegah re-render tidak perlu
   const fetchAgentAndCommissions = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -32,13 +31,17 @@ const KomisiPage = ({ pageUtils }) => {
         agent_affiliate_commissions: [
           {
             commission_amount: commission.commission_amount || 0,
-            paid_at: commission.paid_at || "N/A",
+            paid_at: commission.paid_at && !isNaN(new Date(commission.paid_at).getTime()) 
+                      ? commission.paid_at 
+                      : null, // Cek apakah paid_at valid
           },
         ],
         agent_affiliate_rewards: [
           {
             reward_amount: commission.reward_amount || 0,
-            paid_at: commission.reward_paid_at || "N/A",
+            paid_at: commission.reward_paid_at && !isNaN(new Date(commission.reward_paid_at).getTime()) 
+                      ? commission.reward_paid_at 
+                      : null, // Validasi tanggal
           },
         ],
         agent_affiliate_revenues: [
@@ -60,12 +63,10 @@ const KomisiPage = ({ pageUtils }) => {
     }
   }, [agentId, pageUtils]);
 
-  // ✅ Panggil fetch data saat pertama kali halaman di-load
   useEffect(() => {
     fetchAgentAndCommissions();
   }, [fetchAgentAndCommissions]);
 
-  // ✅ Fungsi navigasi dengan validasi
   const handleNavigate = (datum) => {
     console.log("Button clicked, datum:", datum); // Debugging
     if (!datum.id) {
@@ -73,7 +74,7 @@ const KomisiPage = ({ pageUtils }) => {
       return;
     }
     
-    const targetRoute = `/app/super_admin/komisidetailpage/${datum.id}`; // ✅ Sesuaikan dengan layout
+    const targetRoute = `/app/super_admin/komisidetailpage/${datum.id}`;
     console.log("Navigating to:", targetRoute);
     history.push(targetRoute);
   };
@@ -93,7 +94,7 @@ const KomisiPage = ({ pageUtils }) => {
               rowButtonProps={{
                 buttonText: "Detail",
                 buttonColour: "primary",
-                onButtonClick: handleNavigate, // ✅ Gunakan fungsi yang sudah diperbaiki
+                onButtonClick: handleNavigate,
               }}
             />
           </Card>

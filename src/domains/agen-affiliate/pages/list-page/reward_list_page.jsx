@@ -7,54 +7,52 @@ import PropTypes from "prop-types";
 import AgentAffiliateApi from "../../../../api/v2/admins/agent-affiliate-rewards-api-v2";
 
 const RewardPage = ({ pageUtils }) => {
-  const [agent, setAgent] = useState(null);
   const [rewards, setRewards] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const history = useHistory();
-  const agentId = 1;
+  const agentId = 1; // Sementara hardcoded
 
-  // ✅ Ambil data dari API menggunakan useCallback
   const fetchAgentAndRewards = useCallback(async () => {
     try {
       setIsLoading(true);
-      console.log("Fetching rewards data..."); // Debugging
-
+      console.log("Fetching rewards data...");
+  
       const response = await AgentAffiliateApi.show(agentId);
+      if (!response || !response.data) {
+        throw new Error("Invalid API response");
+      }
+  
       const agentData = response.data;
-
-      console.log("API Response:", agentData); // Debugging
-
-      setAgent(agentData);
-
-      // ✅ Map data agar sesuai dengan struktur tabel
-      const mappedRewards = (agentData.agent_affiliate_rewards || []).map((reward) => ({
-        id: reward.id || null, // Pastikan ID tidak undefined/null
-        agent_affiliate_id: agentData.name || "Unknown Agent",
-        monthly_reward: reward.monthly_reward || 0,
-        top_sales_reward: reward.top_sales_reward || 0,
-        paid_at: reward.paid_at || "N/A",
-        status: reward.status || "Unknown",
-      }));
-
-      console.log("Mapped Rewards:", mappedRewards); // Debugging
-
-      setRewards(mappedRewards);
+      console.log("API Response:", agentData);
+  
+      const rewardsArray = Array.isArray(agentData.agent_affiliate_rewards)
+        ? agentData.agent_affiliate_rewards
+        : [];
+  
+      const mappedAgent = {
+        id: agentData.id || null,
+        name: agentData.name || "Unknown Agent",
+        agent_affiliate_rewards: rewardsArray, // Menyimpan seluruh array reward
+      };
+  
+      console.log("Mapped Agent Data:", mappedAgent);
+      setRewards([mappedAgent]); // Pastikan ini dikirim sebagai array dengan satu objek agen
     } catch (error) {
-      console.error("Error fetching rewards data:", error); // Debugging
+      console.error("Error fetching rewards data:", error);
       pageUtils?.setApiErrorMsg?.("Error fetching agent rewards.");
     } finally {
       setIsLoading(false);
     }
-  }, [agentId, pageUtils]);
+  }, [pageUtils]);
+  console.log("Final Rewards Data Sent to Table:", rewards);
 
-  // ✅ Panggil fetch data saat pertama kali halaman di-load
+
   useEffect(() => {
     fetchAgentAndRewards();
   }, [fetchAgentAndRewards]);
 
-  // ✅ Fungsi navigasi dengan validasi
   const handleNavigate = (datum, action) => {
-    console.log("Button clicked, datum:", datum, "Action:", action); // Debugging
+    console.log("Button clicked, datum:", datum, "Action:", action);
     if (!datum.id) {
       console.error("Error: datum.id is undefined or null");
       return;
@@ -84,9 +82,9 @@ const RewardPage = ({ pageUtils }) => {
               isLoading={isLoading}
               onFetchData={fetchAgentAndRewards}
               rowButtonProps={{
-                buttonText: "Detail",
                 buttonColour: "primary",
-                onButtonClick: handleNavigate, // ✅ Gunakan fungsi yang sudah diperbaiki
+                onDetailPencapaianClick: (datum) => handleNavigate(datum, "detailPencapaian"),
+                onDetailClick: (datum) => handleNavigate(datum, "detail"),
               }}
             />
           </Card>
@@ -98,7 +96,6 @@ const RewardPage = ({ pageUtils }) => {
 
 RewardPage.propTypes = {
   pageUtils: PropTypes.shape({
-    setAlertMsg: PropTypes.func,
     setApiErrorMsg: PropTypes.func,
   }),
 };

@@ -6,7 +6,7 @@ import TitlePage from "components/atoms/title-page";
 import AgentAffiliateApi from "../../../../api/v2/admins/agent-affiliate-rewards-api-v2";
 
 const DetailRewardPage = ({ pageUtils }) => {
-  const { id } = useParams(); // ✅ Ambil id dari URL
+  const { id } = useParams();
   const [rewardData, setRewardData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const history = useHistory();
@@ -16,10 +16,39 @@ const DetailRewardPage = ({ pageUtils }) => {
       try {
         setIsLoading(true);
         const response = await AgentAffiliateApi.show(id);
-        console.log("Reward Data:", response.data); // Debugging log
-        setRewardData(response.data);
+        if (!response.data) {
+          throw new Error("Data tidak ditemukan");
+        }
+
+        const agentData = response.data;
+        const rewardsArray = Array.isArray(agentData.agent_affiliate_rewards) ? agentData.agent_affiliate_rewards : [];
+
+        const signupReward = rewardsArray.find((reward) => reward.reward_type === "signup") || {};
+        const referralReward = rewardsArray.find((reward) => reward.reward_type === "referral") || {};
+        const flashReward = rewardsArray.find((reward) => reward.reward_type === "flash") || {};
+
+        const totalCommission =
+          (signupReward.dp_30_paid ? parseFloat(signupReward.reward_amount) || 0 : 0) +
+          (flashReward.dp_30_paid ? parseFloat(flashReward.reward_amount) || 0 : 0) +
+          (referralReward.dp_30_paid ? parseFloat(referralReward.reward_amount) || 0 : 0);
+
+        const mappedReward = {
+          id: agentData.id || null,
+          agent_name: agentData.name || "-",
+          phone_number: agentData.mobile || "-",
+          payout_date: signupReward.paid_at || "", // Tambahkan tanggal pembayaran
+          account_opening_reward: parseFloat(signupReward.reward_amount) || 0,
+          flash_reward: parseFloat(flashReward.reward_amount) || 0,
+          referral_reward: parseFloat(referralReward.reward_amount) || 0,
+          total_commission: totalCommission,
+          status: signupReward.status || "Pending",
+          dp_30_paid_signup: signupReward.dp_30_paid || false,
+          dp_30_paid_flash: flashReward.dp_30_paid || false,
+          dp_30_paid_referral: referralReward.dp_30_paid || false,
+        };
+
+        setRewardData(mappedReward);
       } catch (error) {
-        console.error("Error fetching reward details:", error);
         pageUtils?.setApiErrorMsg?.("Error fetching reward details.");
       } finally {
         setIsLoading(false);
@@ -30,7 +59,7 @@ const DetailRewardPage = ({ pageUtils }) => {
   }, [id, pageUtils]);
 
   const handleBackToList = () => {
-    history.push("/app/super_admin/reward_list");
+    history.push("/app/super_admin/reward");
   };
 
   const handleNavigateToTransactionHistory = () => {
@@ -41,12 +70,32 @@ const DetailRewardPage = ({ pageUtils }) => {
     setRewardData((prevData) => ({ ...prevData, [field]: value }));
   };
 
+  const handleTogglePaidValidation = (field) => {
+    setRewardData((prevData) => {
+      const newStatus = !prevData[field];
+      const newTotalCommission =
+        (newStatus || prevData.dp_30_paid_signup ? prevData.account_opening_reward : 0) +
+        (newStatus || prevData.dp_30_paid_flash ? prevData.flash_reward : 0) +
+        (newStatus || prevData.dp_30_paid_referral ? prevData.referral_reward : 0);
+
+      return {
+        ...prevData,
+        [field]: newStatus,
+        total_commission: newTotalCommission,
+      };
+    });
+  };
+
   const handleSave = async () => {
+    if (!id) {
+      console.error("Error: ID tidak ditemukan");
+      return;
+    }
+
     try {
       await AgentAffiliateApi.update(id, rewardData);
       pageUtils?.setAlertMsg?.("Detail reward berhasil diperbarui.");
     } catch (error) {
-      console.error("Gagal memperbarui detail reward:", error);
       pageUtils?.setApiErrorMsg?.("Gagal memperbarui detail reward.");
     }
   };
@@ -69,10 +118,6 @@ const DetailRewardPage = ({ pageUtils }) => {
     );
   }
 
-  // 🟢 Ambil Nama Agen & Nomor Telepon dengan fallback jika tidak tersedia
-  const agentName = rewardData.agent_name || rewardData.name || "-";
-  const agentPhone = rewardData.phone_number || rewardData.mobile || "-";
-
   return (
     <>
       <TitlePage mainTitle="Reward" subTitle="Detail" />
@@ -90,90 +135,65 @@ const DetailRewardPage = ({ pageUtils }) => {
                 <Col md={6}>
                   <FormGroup>
                     <Label>Nama Agen</Label>
-                    <Input type="text" value={agentName} disabled />
+                    <Input type="text" value={rewardData.agent_name || "-"} disabled />
                   </FormGroup>
                 </Col>
                 <Col md={6}>
                   <FormGroup>
                     <Label>Nomor Telepon</Label>
-                    <Input type="text" value={agentPhone} disabled />
+                    <Input type="text" value={rewardData.phone_number || "-"} disabled />
                   </FormGroup>
                 </Col>
               </Row>
               <Row>
-                <Col md={6}>
-                  <FormGroup>
-                    <Label>Tanggal Pencairan</Label>
-                    <Input
-                      type="date"
-                      value={rewardData.payout_date || ""}
-                      onChange={(e) => handleFormChange("payout_date", e.target.value)}
-                    />
-                  </FormGroup>
-                </Col>
                 <Col md={6}>
                   <FormGroup>
                     <Label>Reward Buka Akun</Label>
-                    <Input type="text" value={rewardData.account_opening_reward?.toLocaleString() || "0"} disabled />
+                    <Input type="text" value={rewardData.account_opening_reward.toLocaleString()} disabled />
+                    <Input type="checkbox" checked={rewardData.dp_30_paid_signup} onChange={() => handleTogglePaidValidation("dp_30_paid_signup")} />
+                    Validasi DP 30%
                   </FormGroup>
                 </Col>
-              </Row>
-              <Row>
                 <Col md={6}>
                   <FormGroup>
                     <Label>Flash Reward</Label>
-                    <Input type="text" value={rewardData.flash_reward?.toLocaleString() || "0"} disabled />
-                  </FormGroup>
-                </Col>
-                <Col md={6}>
-                  <FormGroup>
-                    <Label>Reward Referral</Label>
-                    <Input type="text" value={rewardData.referral_reward?.toLocaleString() || "0"} disabled />
+                    <Input type="text" value={rewardData.flash_reward.toLocaleString()} disabled />
+                    <Input type="checkbox" checked={rewardData.dp_30_paid_flash} onChange={() => handleTogglePaidValidation("dp_30_paid_flash")} />
+                    Validasi DP 30%
                   </FormGroup>
                 </Col>
               </Row>
               <Row>
                 <Col md={6}>
                   <FormGroup>
-                    <Label>Jumlah Komisi</Label>
-                    <Input type="text" value={rewardData.total_commission?.toLocaleString() || "0"} disabled />
+                    <Label>Reward Referral</Label>
+                    <Input type="text" value={rewardData.referral_reward.toLocaleString()} disabled />
+                    <Input type="checkbox" checked={rewardData.dp_30_paid_referral} onChange={() => handleTogglePaidValidation("dp_30_paid_referral")} />
+                    Validasi DP 30%
                   </FormGroup>
                 </Col>
                 <Col md={6}>
                   <FormGroup>
-                    <Label>Status</Label>
-                    <Input
-                      type="select"
-                      value={rewardData.status || "Pending"}
-                      onChange={(e) => handleFormChange("status", e.target.value)}
-                    >
-                      <option value="Pending">Pending</option>
-                      <option value="Approved">Approved</option>
-                      <option value="Rejected">Rejected</option>
-                    </Input>
+                    <Label>Tanggal Pembayaran</Label>
+                    <Input type="date" value={rewardData.payout_date || ""} onChange={(e) => handleFormChange("payout_date", e.target.value)} />
                   </FormGroup>
                 </Col>
               </Row>
+              <FormGroup>
+                <Label>Jumlah Reward</Label>
+                <Input type="text" value={rewardData.total_commission.toLocaleString()} disabled />
+              </FormGroup>
             </Form>
           </Card>
         </Col>
       </Row>
       <div className="text-right mt-3">
-        <Button onClick={handleNavigateToTransactionHistory}>Riwayat Transaksi</Button>
-        <Button className="ml-2">Cancel</Button>
-        <Button className="ml-2" color="primary" onClick={handleSave}>
-          Save
-        </Button>
+        <Button color="info" onClick={handleNavigateToTransactionHistory}>Riwayat Transaksi</Button>
+        <Button color="secondary" className="ml-2">Cancel</Button>
+        <Button color="primary" className="ml-2" onClick={handleSave}>Save</Button>
       </div>
     </>
   );
-};
-
-DetailRewardPage.propTypes = {
-  pageUtils: PropTypes.shape({
-    setAlertMsg: PropTypes.func,
-    setApiErrorMsg: PropTypes.func,
-  }),
 };
 
 export default DetailRewardPage;

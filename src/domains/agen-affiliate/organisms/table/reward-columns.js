@@ -1,14 +1,13 @@
-import React, { useCallback } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { useHistory } from "react-router-dom";
 import { RowButton } from "components/atoms";
-import { format } from "date-fns"; // Format tanggal
-import { id } from "date-fns/locale"; // Locale Indonesia
+import { format } from "date-fns";
+import { id } from "date-fns/locale";
 
 const propTypes = {
-  buttonText: PropTypes.string,
   buttonColour: PropTypes.string.isRequired,
-  onButtonClick: PropTypes.func,
+  onDetailPencapaianClick: PropTypes.func.isRequired,
+  onDetailClick: PropTypes.func.isRequired,
 };
 
 const actionCellPropTypes = {
@@ -19,39 +18,19 @@ const actionCellPropTypes = {
   }),
 };
 
-const RewardColumns = ({ buttonColour }) => {
-  const history = useHistory();
-
-  const handleSelectRow = useCallback(
-    (datum, action) => {
-      const { id } = datum;
-      if (action === "detailPencapaian") {
-        history.push({
-          pathname: `/app/super_admin/detail-pencapaian-reward/${id}`,
-          state: { id },
-        });
-      } else if (action === "detail") {
-        history.push({
-          pathname: `/app/super_admin/detail-reward-page/${id}`,
-          state: { id },
-        });
-      }
-    },
-    [history]
-  );
-
+const RewardColumns = ({ buttonColour, onDetailPencapaianClick, onDetailClick }) => {
   const ActionCell = ({ cell: { row } }) => (
     <>
       <RowButton
         data={row.original}
         color={buttonColour}
-        onClick={() => handleSelectRow(row.original, "detailPencapaian")}
+        onClick={() => onDetailPencapaianClick(row.original)}
         text="Detail Pencapaian"
       />
       <RowButton
         data={row.original}
         color={buttonColour}
-        onClick={() => handleSelectRow(row.original, "detail")}
+        onClick={() => onDetailClick(row.original)}
         text="Detail"
       />
     </>
@@ -69,15 +48,36 @@ const RewardColumns = ({ buttonColour }) => {
       accessor: "name",
     },
     {
-      Header: "Jumlah Reward",
+      Header: "Reward Bulanan",
       accessor: "agent_affiliate_rewards",
-      id: "jumlah_reward",
+      id: "reward_bulanan",
       Cell: ({ cell }) => {
-        const reward =
-          Array.isArray(cell.value) && cell.value.length > 0
-            ? cell.value[0].reward_amount
-            : 0;
-        return `Rp ${parseFloat(reward).toLocaleString("id-ID")}`;
+        const rewards = cell.value || [];
+        const rewardObj = rewards.find(r => r.reward_type === "signup");
+        const reward = rewardObj ? parseFloat(rewardObj.reward_amount) : 0;
+        return `Rp ${reward.toLocaleString("id-ID")}`;
+      },
+    },
+    {
+      Header: "Reward Referral",
+      accessor: "agent_affiliate_rewards",
+      id: "reward_referral",
+      Cell: ({ cell }) => {
+        const rewards = cell.value || [];
+        const rewardObj = rewards.find(r => r.reward_type === "referral");
+        const reward = rewardObj ? parseFloat(rewardObj.reward_amount) : 0;
+        return `Rp ${reward.toLocaleString("id-ID")}`;
+      },
+    },
+    {
+      Header: "Reward Flash",
+      accessor: "agent_affiliate_rewards",
+      id: "reward_flash",
+      Cell: ({ cell }) => {
+        const rewards = cell.value || [];
+        const rewardObj = rewards.find(r => r.reward_type === "flash");
+        const reward = rewardObj ? parseFloat(rewardObj.reward_amount) : 0;
+        return `Rp ${reward.toLocaleString("id-ID")}`;
       },
     },
     {
@@ -85,12 +85,15 @@ const RewardColumns = ({ buttonColour }) => {
       accessor: "agent_affiliate_rewards",
       id: "tanggal_pencairan_reward",
       Cell: ({ cell }) => {
-        const dateStr =
-          Array.isArray(cell.value) && cell.value.length > 0
-            ? cell.value[0].paid_at
-            : null;
-        if (!dateStr) return "-";
-        return format(new Date(dateStr), "dd MMMM yyyy", { locale: id });
+        const rewards = cell.value || [];
+        const rewardWithPaidAt = rewards.find(r => r.paid_at);
+
+        if (!rewardWithPaidAt || !rewardWithPaidAt.paid_at) {
+          return "Belum Dicairkan";
+        }
+
+        const parsedDate = new Date(rewardWithPaidAt.paid_at);
+        return !isNaN(parsedDate.getTime()) ? format(parsedDate, "dd MMMM yyyy", { locale: id }) : "Belum Dicairkan";
       },
     },
     {
@@ -98,23 +101,20 @@ const RewardColumns = ({ buttonColour }) => {
       accessor: "agent_affiliate_rewards",
       id: "status_reward",
       Cell: ({ cell }) => {
-        const status =
-          Array.isArray(cell.value) && cell.value.length > 0
-            ? cell.value[0].dp_30_paid
-              ? "Paid"
-              : "Unpaid"
-            : "-";
-        return status;
+        const rewards = cell.value || [];
+        const rewardStatus = rewards.find(r => r.status)?.status || "Pending";
+        return rewardStatus;
       },
     },
     {
       Header: "Aksi",
+      accessor: "action",
       id: "action",
       Cell: ActionCell,
     },
   ];
 };
 
-RewardColumns.propTypes = propTypes;
 
+RewardColumns.propTypes = propTypes;
 export default RewardColumns;
